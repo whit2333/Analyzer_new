@@ -1,0 +1,103 @@
+*_______________________________________________________________________
+*      sos_track_histid.cmn
+*
+*      This common block contains the HBOOK histogram id numbers
+*      for all sos histograms in which direct hfill calls are made.
+*
+*      It also contains the paramter flags to turn on and off histograming
+*      of each of the hard coded blocks.
+*
+*      Created 9 April 1994	D. F. Geesaman
+*
+* $Log: sos_track_histid.cmn,v $
+* Revision 1.7  1996/01/17 15:06:31  cdaq
+* (JRA) Add sidcuttdc and a temporary junk common block
+*
+* Revision 1.6  1995/05/22 19:12:33  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+*
+* Revision 1.5  1995/05/12  12:24:01  cdaq
+* (JRA) Modify/add user histograms
+*
+* Revision 1.4  1995/04/06  20:22:13  cdaq
+* (SAW) Add residuals histogram ids
+*
+* Revision 1.3  1994/08/05  20:38:26  cdaq
+* (SAW) Add makereg directive with required include files
+*       Add "CTPTYPE=event" directive for auto generation of CTP reg calls
+*
+* Revision 1.2  1994/05/13  04:00:50  cdaq
+* (DFG) Add s_fill_dc_target_hist id's
+*
+* Revision 1.1  1994/04/12  21:13:42  cdaq
+* Initial revision
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'sos_data_structures.cmn'
+*
+*     CTPTYPE=parm
+*
+      integer*4 siddcwiremap(smax_num_dc_planes)
+      integer*4 siddcdrifttime(smax_num_dc_planes)
+      integer*4 siddcdriftdis(smax_num_dc_planes)
+      integer*4 siddcwirecent(smax_num_dc_planes)
+      integer*4 sidsx_fp,sidsy_fp,sidsxp_fp,sidsyp_fp,sidslogchi2_fp,
+     &     sidsnfree_fp,sidschi2perdeg_fp
+      integer*4 sidsx_tar, sidsy_tar, sidsz_tar, sidsxp_tar, sidsyp_tar,
+     &     sidsdelta_tar, sidsp_tar
+      integer*4 sidres_fp(smax_num_dc_planes)
+      integer*4 sidsingres_fp(smax_num_dc_planes)
+      integer*4 sidrawtdc
+      integer*4 sidcuttdc
+
+      common/sos_tracking_histid/
+     &     siddcwiremap,
+     &     siddcdrifttime,
+     &     siddcdriftdis,
+     &     siddcwirecent,
+     &     sidsx_fp,
+     &     sidsy_fp,
+     &     sidsxp_fp,
+     &     sidsyp_fp,
+     &     sidslogchi2_fp,
+     &     sidsnfree_fp,
+     &     sidschi2perdeg_fp,
+     &     sidsx_tar,
+     &     sidsy_tar,
+     &     sidsz_tar,
+     &     sidsxp_tar,
+     &     sidsyp_tar,
+     &     sidsdelta_tar,
+     &     sidsp_tar,
+     &     sidres_fp,
+     &     sidsingres_fp,
+     &     sidrawtdc,
+     &     sidcuttdc
+
+*
+*     CTPTYPE=parm
+*
+      integer*4 sturnon_decoded_dc_hist
+      integer*4 sturnon_focal_plane_hist
+      integer*4 sturnon_target_hist
+      common/sos_hist_flags/
+     &     sturnon_decoded_dc_hist,
+     &     sturnon_focal_plane_hist,
+     &     sturnon_target_hist
+
+
+*  temporary junk common block.
+*
+*     CTPTYPE=event
+*
+      real*4 sx_sp1(sntracks_max),sy_sp1(sntracks_max),sxp_sp1(sntracks_max)
+      real*4 sx_sp2(sntracks_max),sy_sp2(sntracks_max),sxp_sp2(sntracks_max)
+      real*4 ssx_sp1,ssy_sp1,ssxp_sp1
+      real*4 ssx_sp2,ssy_sp2,ssxp_sp2
+*
+      common/stemp_junk_cb/sx_sp1,sy_sp1,sxp_sp1,sx_sp2,sy_sp2,sxp_sp2,
+     &     ssx_sp1,ssy_sp1,ssxp_sp1,ssx_sp2,ssy_sp2,ssxp_sp2

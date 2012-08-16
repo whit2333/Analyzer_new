@@ -1,0 +1,251 @@
+#
+# $Log: Makefile.Unix,v $
+# Revision 1.21.8.2  2007/09/10 20:08:01  pcarter
+# Implemented changes to allow compilation on RHEL 3,4,5 and MacOSX
+#
+# Revision 1.21.8.1  2007/08/07 18:50:57  puckett
+# Don't want CTP Root trees anymore
+#
+# Revision 1.21  2004/07/08 20:04:33  saw
+# CTP ROOT trees will be compiled in if ROOTSYS is defined.
+# Build dummy CTP ROOT tree commands when ROOTSYS not defined.
+#
+# Revision 1.20  2004/07/02 18:50:00  saw
+# Add ability to compile CTP root code.  To use, make sure the ROOTSYS
+# environment variable is set and comment out the line "ROOTSYS=".
+#
+# Revision 1.19  2004/02/26 14:58:29  jones
+# For now , comment out parts dealing with ROOT.
+#
+# Revision 1.18  2003/02/21 20:53:34  saw
+# Force rebuilding of files derived from daVarRpc.x more often.
+#
+# Revision 1.17  1999/11/04 20:34:03  saw
+# Alpha compatibility.
+# New RPC call needed for root event display.
+# Start of code to write ROOT trees (ntuples) from new "tree" block
+#
+# Revision 1.16  1998/12/08 15:40:45  saw
+# Force daVarRpc.h to be built.
+#
+# Revision 1.15  1998/12/07 22:11:08  saw
+# Initial setup
+#
+# Revision 1.14  1998/12/01 14:09:09  saw
+# (SAW) Misc fixes
+#
+# Revision 1.13  96/11/07  20:19:37  20:19:37  saw (Stephen A. Wood)
+# (SAW) Add SunOS and AIX compatibility
+# 
+# Revision 1.12  1996/09/04 14:27:44  saw
+# (SAW) Add switches for OSF (Alpha) and some stuff for
+#       Linux (NFSDIRECTORY fixes)
+#
+# Revision 1.11  1996/04/29 18:28:53  saw
+# (SAW) New makefile style
+#
+# Revision 1.10  1996/01/16 15:27:20  cdaq
+# (SAW) Add hash table name lookup
+#
+# Revision 1.9  1995/07/28 14:12:36  cdaq
+# (SAW) SGI/IRIX compatibility
+#
+# Revision 1.8  1995/04/06  20:08:28  cdaq
+# (SAW) Fix typo in a RPCGEN line
+#
+# Revision 1.7  1995/03/13  19:46:01  cdaq
+# (SAW) Add linux compile flags
+#
+# Revision 1.6  1994/11/23  15:35:29  cdaq
+# (SAW) Make a libctpclient.a, add NOFNMATCH for ultrix
+#
+# Revision 1.5  1994/10/11  18:31:42  cdaq
+# (SAW) Add thClient
+#
+# Revision 1.4  1994/08/18  04:21:48  cdaq
+# (SAW) Add makereg.c
+#
+# Revision 1.3  1994/08/04  03:49:08  cdaq
+# (SAW) Add gethit facility (thGethit.c)
+#
+# Revision 1.2  1994/06/14  17:54:01  cdaq
+# (SAW) Add report generator (thReport.c)
+#
+# Revision 1.1  1994/04/15  20:28:27  cdaq
+# Initial revision
+#
+
+# To disable compilation of CTP Root Trees, make sure that the environment
+# variable ROOTSYS is undefined, or uncomment "#ROOTSYS=" line below.
+# The same must be done in EXE/Makefile
+
+ROOTSYS=
+
+NEWSTYLE = 1
+
+#Only append to CFLAGS and CXXFLAGS the first time through
+ifeq ($(MAKELEVEL),2)
+  ifeq ($(MYOS),Linux)
+    ifeq ($(F77COMPILER),Absoft)
+      CFLAGS = -DNOF77extname -DAbsoftUNIXFortran # -DAbsoftUNIXFortran for cfortran.h
+    else
+      ifeq ($(OSEXT),TEST)
+        override CFLAGS += -Df2cFortran -b i486-linux -pg # -Df2cFortran for cfortran.h
+      else
+      #  CFLAGS = -g -Df2cFortran -b i486-linux -O # -Df2cFortran for cfortran.h
+        override CFLAGS += -Df2cFortran # -Df2cFortran for cfortran.h
+      endif
+    endif
+    override CXXFLAGS += -fno-exceptions -fPIC
+  endif
+  
+  ifdef ROOTSYS
+    override CFLAGS += -DROOTTREE
+    override CXXFLAGS += -I$(ROOTSYS)/include
+  endif
+endif
+ifeq ($(MYOS),Linux)
+# -k generates K&R C
+#  RPCCOM=rpcgen -b -k
+  RPCCOM=rpcgen -b
+endif
+
+include ../../etc/Makefile
+
+ctp_sources = thTest.c thTestParse.c thTestExecute.c thHandlers.c thParm.c \
+       thUtils.c thLoad.c thGroup.c thHist.c thReport.c thGethit.c \
+       daVarRegister.c daVarRpcProc.c daVarHandlers.c daVarServ.c \
+       daVarRpc_svc.c daVarRpc_xdr.c daVarHashLib.c thTree.c
+ctpclient_sources = daVarRpc_xdr.c daVarRpc_clnt.c thClient.c
+
+lib_targets := $(patsubst %.c, libctp.a(%.o), $(ctp_sources)) \
+	$(patsubst %.c, libctpclient.a(%.o), $(ctpclient_sources))
+
+ifdef ROOTSYS
+cxxsources = thRootStuff.cpp
+lib_targets := $(patsubst %.c, libctp_root.a(%.o), $(ctp_sources)) \
+	$(patsubst %.c, libctpclient_root.a(%.o), $(ctpclient_sources)) \
+	$(patsubst %.cpp, libctp_root.a(%.o), $(cxxsources))
+endif
+
+sources = $(ctpclient_sources) $(ctp_sources) makereg.c
+
+bin_targets = makereg
+
+install-dirs := lib bin
+
+ifeq ($(MYOS),IRIX)
+  CC = gcc
+  CFLAGS = -DNOFNMATCH
+  RPCCOM=rpcgen
+endif
+
+ifeq ($(MYOS),OSF1)
+  CC = cc -verbose
+  CFLAGS = -DNOFNMATCH
+  RPCCOM=rpcgen
+endif
+
+ifeq ($(MYOS),HPUX)
+  CC = gcc
+ifeq ($(OSEXT),TEST)
+  CFLAGS = -Dhpux -D_HPUX_SOURCE -Dextname -g -pg # for gprof
+else
+  CFLAGS = -Dhpux -D_HPUX_SOURCE -Dextname -g
+endif
+  ARFLAGS = frv
+  RPCCOM=rpcgen
+endif
+
+ifeq ($(MYOS),ULTRIX)
+  CC = gcc
+  CFLAGS = -DNOFNMATCH
+  RPCCOM=/usr/site1/rpc/rpcgen
+endif
+
+ifeq ($(MYOS),SunOS)
+  CC = gcc
+  ifeq ($(OSVERSION),4)
+    CFLAGS = -O -DNOFNMATCH
+  else
+    CFLAGS = -O
+  endif
+  RPCCOM = /usr/bin/rpcgen
+endif
+
+ifeq ($(MYOS),AIX)
+  CC = gcc
+  CFLAGS = -O -Dextname
+  RPCCOM = rpcgen
+endif
+
+##library: libctp.a
+
+##$(LIBROOT)/libctp.a: $(libctp_members)
+
+ifdef NFSDIRECTORY
+
+../%.c : $(NFSDIRECTORY)/CTP/%.c
+	ln -s $< $@
+
+../%.h : $(NFSDIRECTORY)/CTP/%.h
+	ln -s $< $@
+
+../%.x : $(NFSDIRECTORY)/CTP/%.x
+	ln -s $< $@
+
+.PRECIOUS: ../%.c ../%.h ../%.x
+endif
+
+makereg: makereg.o
+
+ifdef ROOTSYS
+thRootStuff.o: ../thRootStuff.cpp
+	$(CXX) -o$@ -c $(CXXFLAGS) $<
+endif
+
+RPCDEPENDS_RULE = echo "$(subst .d,.o,$@): \
+	../$(subst .d,.c,$@) ../daVarRpc.h" >$@
+
+# Include ../daVarRpc.h as a dependency to force it to be made before
+# dependencies on non-autogenerated sources are done
+
+daVarRpc_xdr.d: ../daVarRpc.h
+	echo remaking $@
+	$(RPCDEPENDS_RULE)
+
+daVarRpc_clnt.d: ../daVarRpc.h
+	echo remaking $@
+	$(RPCDEPENDS_RULE)
+
+daVarRpc_svc.d: ../daVarRpc.h
+	echo remaking $@
+	$(RPCDEPENDS_RULE)
+
+daVarRpc.d: ../daVarRpc.h
+	echo remaking $@
+	touch $@
+
+../daVarRpc_xdr.c: ../daVarRpc.x ../daVar.h daVarRpc_xdr.d
+	$(RM) $@
+	(cd .. ; $(RPCCOM) -o $(@F) -c daVarRpc.x)
+
+../daVarRpc_svc.c: ../daVarRpc.x ../daVar.h daVarRpc_svc.d
+	$(RM) $@
+#	(cd .. ; $(RPCCOM) -o $(@F) -m daVarRpc.x)
+# work around a bug in rpcgen present in Mac OS X 10.4:
+	(cd .. ; $(RPCCOM) -o temp_svc.c -m daVarRpc.x; sed -e 's/extern/static/g' temp_svc.c > $(@F); $(RM) temp_svc.c)
+
+../daVarRpc_clnt.c: ../daVarRpc.x ../daVar.h daVarRpc_clnt.d
+	$(RM) $@
+	(cd .. ; $(RPCCOM) -o $(@F) -l daVarRpc.x)
+
+../daVarRpc.h: ../daVarRpc.x ../daVar.h
+	$(RM) $@
+	(cd .. ; $(RPCCOM) -o $(@F) -h daVarRpc.x)
+
+include $(sources:.c=.d)
+
+ifdef ROOTSYS
+include $(cxxsources:.cpp=.d)
+endif

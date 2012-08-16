@@ -1,0 +1,52 @@
+**************************begin: s_Ntuple.cmn ***********************
+*- 
+*-   Created    8-Apr-1994   Kevin B. Beard, Hampton Univ.
+*........................................................................
+*- Misc. info. required for SOS Ntuple
+* $Log: s_ntuple.cmn,v $
+* Revision 1.4  2004/02/17 16:41:45  jones
+* Add parameters and variables needed for segmenting rzdat files
+*
+* Revision 1.3  1995/05/22 19:05:27  cdaq
+* (SAW) Correct some CTP class types
+*
+* Revision 1.2  1994/06/17  03:14:40  cdaq
+* (KBB) Fix typos, change variable names, reorder common
+*
+* Revision 1.1  1994/04/14  16:05:24  cdaq
+* Initial revision
+*
+*
+      integer SMAX_Ntuple_size
+      parameter (SMAX_Ntuple_size= 100)
+      integer default_s_Ntuple_ID
+      parameter (default_s_Ntuple_ID= 9020)
+*
+*     CTPTYPE=parm
+*
+      logical s_Ntuple_exists
+      integer s_Ntuple_ID
+      integer s_Ntuple_size
+      integer s_Ntuple_IOchannel
+      character*80 s_Ntuple_name
+      character*80 s_Ntuple_title
+      character*132 s_Ntuple_directory
+      character*256 s_Ntuple_file
+      character*8 s_Ntuple_tag(SMAX_Ntuple_size)
+      integer s_Ntuple_max_segmentevents
+*
+*     CTPTYPE=event
+*
+      integer s_Ntuple_segmentevents
+      integer s_Ntuple_filesegments
+      real s_Ntuple_contents(SMAX_Ntuple_size)
+*
+      COMMON /SOS_Ntuple/ s_Ntuple_exists,s_Ntuple_ID,
+     &                     s_Ntuple_size,s_Ntuple_IOchannel,
+     &                      s_Ntuple_name,s_Ntuple_title,
+     &                       s_Ntuple_directory,s_Ntuple_file,
+     &                        s_Ntuple_tag,s_Ntuple_contents,
+     >                    s_Ntuple_max_segmentevents,s_Ntuple_segmentevents,
+     >                    s_Ntuple_filesegments
+*
+****************************end: s_ntuple.cmn ***********************

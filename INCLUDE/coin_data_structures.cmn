@@ -1,0 +1,82 @@
+*****************begin: coin_data_structures.cmn*************************
+*
+*     include file     coin_data_structures.cmn
+*
+*     Author:	D. F. Geesaman		1 September 1993
+*
+* $Log: coin_data_structures.cmn,v $
+* Revision 1.4  2003/12/18 18:11:02  jones
+* Added variables C_costhcm,C_phicm calculated in ENGINE/delta_physics.f
+*
+* Revision 1.3  1999/02/23 19:04:41  csa
+* Add some physics vars, cleanup
+*
+* Revision 1.2  1996/04/30 13:33:33  saw
+* (JRA) Add some coincidence kinematics variables
+*
+* Revision 1.1  1995/05/22 18:42:27  cdaq
+* Initial revision
+*
+
+****************************************************************************
+*  COIN_PHYSICS COMMON BLOCKS
+*
+*  These are filled by C_PHYSICS.
+* 
+*
+*     CTPTYPE=event
+*
+      REAL*4 CMISSING_MASS         ! Missing mass of undetected hadron system
+      REAL*4 CMISSING_MOM          ! Magnitude of missing momentum 
+      REAL*4 CMISSING_MOMS         ! Missing momentum with an attitude adjustment
+      REAL*4 CMISSING_MOMX         ! X component of missing momentum
+      REAL*4 CMISSING_MOMY         ! Y component of missing momentum
+      REAL*4 CMISSING_MOMZ         ! Z component of missing momentum
+      REAL*4 CMISSING_E            ! Missing E (Binding Energy)
+      REAL*4 CTIME_COIN_COR        ! Corrected Coincidence time
+      REAL*4 CS                    ! s computed from spectrometers only
+      REAL*4 CTHETAPQ              ! Angle between q and hadron
+      REAL*4 CPHIPQ                ! Azimuthal angle of hadron about q
+      REAL*4 W2,C_INVMASS,P_SOS_CORR,P_HMS_CORR,OMEGA
+      REAL*4 CMISSING_MOM_PAR,CMISSING_MOM_PERP,CMISSING_MOM_OOP
+      REAL*4 C_BIGQ2,C_costhcm,C_phicm
+*
+      COMMON/COIN_PHYSICS_R4/
+     &     CMISSING_MASS,
+     &     CMISSING_MOM,
+     &     CMISSING_MOMS,
+     &     CMISSING_MOMX,
+     &     CMISSING_MOMY,
+     &     CMISSING_MOMZ,
+     &     CMISSING_E,
+     &     CTIME_COIN_COR,
+     &     CS,
+     &     CTHETAPQ,
+     &     CPHIPQ,
+     &     W2,
+     &     C_INVMASS,
+     &     P_SOS_CORR,
+     &     P_HMS_CORR,
+     &     OMEGA,
+     &     CMISSING_MOM_PAR,
+     &     CMISSING_MOM_PERP,
+     &     CMISSING_MOM_OOP,
+     &     C_BIGQ2,C_costhcm,C_phicm
+
+*
+*     CTPTYPE=event
+*
+      real*4 ccointime_hms
+      real*4 ccointime_sos
+
+      common/coin_timing_vars/
+     &    ccointime_hms,
+     &    ccointime_sos
+*
+*                                          
+*******************end: coin_data_structures.cmn*************************
+*     Local Variables:
+*     mode: fortran
+*     fortran-continuation-string: "&"
+*     comment-column: 35
+*     End:

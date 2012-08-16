@@ -1,0 +1,147 @@
+* sos_scin_tof.cmn:   common block used by the subroutines that
+*       calculate the sos time of flight.
+* $Log: sos_scin_tof.cmn,v $
+* Revision 1.9  2005/03/15 21:14:28  jones
+* Add variables htof_tolerance and stof_tolerance to be used to filter the scintillator tdc hits and group them by time. ( P. Bosted)
+*
+*
+* Revision 1.8  1996/04/30 14:04:07  saw
+* (JRA) Add sbeta_p, and sbeta_pcent
+*
+* Revision 1.7  1995/05/22 19:03:32  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+* Add some varaibles and fix typos
+*
+* Revision 1.6  1995/03/13  19:13:57  cdaq
+* (JRA) Change sscin_minph to sscin_???_minph arrays.  Add tracks index to
+*       sgood_tdc_pos, sgood_tdc_neg, sgood_scin_time, sgood_plane_time,
+*       and sgood_beta.
+*
+* Revision 1.5  1994/11/21  18:02:11  cdaq
+* * (SPB) Recopied from hms file and modified names for SOS
+*
+* Revision 1.4  1994/08/16  03:56:41  cdaq
+* (SAW) Change some variables to parm CTPTYPE
+*
+* Revision 1.3  1994/08/05  21:02:04  cdaq
+* (SAW) Add makereg directive with required include files
+*       Add "CTPTYPE=event" directive for auto generation of CTP reg calls
+*
+* Revision 1.2  1994/05/13  03:58:46  cdaq
+* (DFG) Remove parameters to .parm file
+*
+* Revision 1.1  1994/04/13  19:01:46  cdaq
+* Initial revision
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'sos_data_structures.cmn'
+*%%   include 'sos_scin_parms.cmn'
+*
+*     CTPTYPE=event
+*
+      integer*4 sntof
+
+      real*4 sscin_long_coord(smax_scin_hits)
+      real*4 sscin_trans_coord(smax_scin_hits)
+      real*4 sscin_pos_coord(smax_scin_hits)
+      real*4 sscin_neg_coord(smax_scin_hits)
+      real*4 sscin_pos_sigma(smax_scin_hits)
+      real*4 sscin_neg_sigma(smax_scin_hits)
+      real*4 sscin_pos_time(smax_scin_hits)
+      real*4 sscin_neg_time(smax_scin_hits)
+      real*4 sscin_sigma(smax_scin_hits)
+      real*4 sscin_time(smax_scin_hits)
+      real*4 sscin_vel_light(smax_scin_hits)
+      real*4 sscin_pos_phc_coeff(smax_scin_hits)
+      real*4 sscin_neg_phc_coeff(smax_scin_hits)
+      real*4 sscin_pos_time_offset(smax_scin_hits)
+      real*4 sscin_neg_time_offset(smax_scin_hits)
+      real*4 sscin_time_fp(smax_scin_hits)
+
+*
+*     CTPTYPE=parm
+*
+      real*4 sscin_pos_minph(smax_scin_hits) ! ADC Offset for PH correction
+      real*4 sscin_neg_minph(smax_scin_hits) ! ADC Offset for PH correction
+      real*4 sscin_tdc_min
+      real*4 sscin_tdc_max
+      real*4 sscin_tdc_to_time
+      real*4 sstart_time_center    ! center of time window on scin. hits
+      real*4 sstart_time_slop      ! 1/2 width of time window on scin. hits
+      real*4 stof_tolerance        ! tolerance for tof window in nsec
+*
+*     CTPTYPE=event
+*
+      logical*4 sgood_tdc_pos(sntracks_max,smax_scin_hits)
+      logical*4 sgood_tdc_neg(sntracks_max,smax_scin_hits)
+      logical*4 sgood_scin_time(sntracks_max,smax_scin_hits)
+      logical*4 sgood_plane_time(sntracks_max,snum_scin_planes)
+      logical*4 sgood_beta(sntracks_max)
+      logical*4 sscin_on_track(sntracks_max,smax_scin_hits)
+
+      common/sos_scin_tof/
+     &     sntof,
+     &     sscin_long_coord,
+     &     sscin_trans_coord,
+     &     sscin_pos_coord,sscin_neg_coord, !position of tubes
+     &     sscin_pos_sigma,sscin_neg_sigma, !time resolution for tubes
+     &     sscin_pos_time, sscin_neg_time, !time for 'pos' and 'neg' tubes.
+     &     sscin_sigma,                 !time resolution for scin.
+     &     sscin_time,                  !time for scin. (ave of tubes)
+     &     sscin_vel_light,
+     &     sscin_pos_phc_coeff,sscin_neg_phc_coeff,
+     &     sscin_pos_time_offset,sscin_neg_time_offset,
+     &     sscin_pos_minph, sscin_neg_minph,
+     &     sscin_tdc_min,
+     &     sscin_tdc_max,
+     &     sscin_tdc_to_time,
+     &     sgood_tdc_pos, sgood_tdc_neg, !did pos/neg tube had good tdc?
+     &     sgood_scin_time,             !was a time found for the hit?
+     &     sgood_plane_time,            !was a time found for the plane?
+     &     sgood_beta,                  !was a value of beta found?
+     &     sscin_on_track,              !list of scins on each track.
+     &     sscin_time_fp,               !scin time (ave) projected to fp
+     &     sstart_time_center,
+     &     sstart_time_slop,
+     &     stof_tolerance
+ 
+*
+*     CTPTYPE=event
+*
+      real*4 s_fptime(snum_scin_planes)    !time at fp from all hits in 1 plane
+      real*4 s_fptimedif(6)                !fp time differences
+      real*4 sbeta_notrk
+      real*4 sbeta_chisq_notrk
+      real*4 sbeta_p
+      real*4 sbeta_pcent
+
+       common/stof_notrk/
+     &  s_fptime,
+     &  s_fptimedif,
+     &  sbeta_notrk,
+     &  sbeta_chisq_notrk,
+     &  sbeta_p,
+     &  sbeta_pcent
+
+c      integer*4 sscin_pos_did(snum_scin_planes,16)
+c      integer*4 sscin_neg_did(snum_scin_planes,16)
+c      integer*4 sscin_pos_should(snum_scin_planes,16)
+c      integer*4 sscin_neg_should(snum_scin_planes,16)
+c      real*4 sscin_pos_eff(snum_scin_planes,16)
+c      real*4 sscin_neg_eff(snum_scin_planes,16)
+c      real*4 sscin_pos_solo(snum_scin_planes,16)
+c      real*4 sscin_neg_solo(snum_scin_planes,16)
+c
+c      common/smore_debugging/
+c     &  sscin_pos_eff,
+c     &  sscin_neg_eff,
+c     &  sscin_pos_solo,
+c     &  sscin_neg_solo,
+c     &  sscin_pos_did,
+c     &  sscin_neg_did,
+c     &  sscin_pos_should,
+c     &  sscin_neg_should

@@ -1,0 +1,4 @@
+**************************begin: insane_scalers.cmn ***********************
+      INTEGER insane_last_event_id, insane_run_number
+      COMMON /insane_scalers/ insane_last_event_id, insane_run_number
+****************************end: insane_scalers.cmn ***********************

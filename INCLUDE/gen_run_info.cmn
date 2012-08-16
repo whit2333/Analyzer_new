@@ -1,0 +1,112 @@
+**************************begin: gen_run_info.cmn ***********************
+*- 
+*-   Created   22-Apr-1994   Kevin B. Beard, Hampton Univ.
+* $Log: gen_run_info.cmn,v $
+* Revision 1.7.24.5  2007/11/02 22:36:53  cdaq
+* Added additional prescale factors
+*
+* Revision 1.7.24.4  2007/10/23 13:27:44  cdaq
+* Added "gtrig7" and "gtrig8" equivalences for gen_run_enable
+*
+* Revision 1.7.24.3  2007/09/12 19:29:42  puckett
+* fixed incorrect usage of array index of gen_run_enable(type)
+*
+* Revision 1.7.24.2  2007/06/20 18:38:23  puckett
+* Added BigCal Monte Carlo analysis capability
+*
+* Revision 1.7.24.1  2007/06/04 15:11:23  puckett
+* changed hit array structure for trigger-related signals
+*
+* Revision 1.7  1996/09/04 15:46:13  saw
+* (JRA) Add prescale factors and some a debugging  flag
+*
+* Revision 1.6  1996/01/17 15:57:28  cdaq
+* (JRA) Add some short equivalences for CTP convenience
+*
+* Revision 1.5  1995/03/13 19:01:03  cdaq
+* (SAW) Change gen_run_enable from logical to integer
+*
+* Revision 1.4  1995/01/31  15:52:04  cdaq
+* (SAW) Add gen_run_hist_dump_interval for in run hist dumping
+*
+* Revision 1.3  1994/10/20  14:19:12  cdaq
+* (SAW) Add accumulators for analyzed event counts ("May process")
+*
+* Revision 1.2  1994/08/03  20:11:50  cdaq
+* (SAW) Add "CTPTYPE=parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.1  1994/05/27  15:12:47  cdaq
+* Initial revision
+*
+*........................................................................
+*- Misc. info. about a run
+*
+*     CTPTYPE=parm
+*
+      INTEGER gen_run_number,gen_run_type
+      INTEGER gen_run_total_events             !reported by CODA
+      INTEGER gen_run_UTC_start,gen_run_UTC_stop,gen_run_UTC_last
+      CHARACTER*80 gen_run_date_start,gen_run_date_stop
+      CHARACTER*80 gen_run_date_last
+      CHARACTER*800 gen_run_comment
+*
+      COMMON /gen_run_info/ gen_run_number,gen_run_type,
+     &     gen_run_total_events,gen_run_UTC_start,gen_run_UTC_stop,
+     &     gen_run_UTC_last,gen_run_date_start,gen_run_date_stop,
+     &     gen_run_date_last,gen_run_comment
+*
+*
+*     CTPTYPE=parm
+*
+      INTEGER gen_MAX_trigger_types
+      PARAMETER (gen_MAX_trigger_types= 15)
+      INTEGER gen_run_enable(0:gen_MAX_trigger_types)    !1=process, 0=ignore
+      INTEGER gen_run_triggered(0:gen_MAX_trigger_types) !triggers found
+      INTEGER gen_run_analyzed(0:gen_MAX_trigger_types)  ! NOT USED ANYWHERE
+      INTEGER gen_run_hist_dump_interval
+      INTEGER gen_run_starting_event,gen_run_stopping_event
+      INTEGER gen_analyze_beamline      !1=enable beamline, 0=disable
+      integer gen_bigcal_mc             !0=disable, 1=dat, 2=ntup, 3=dat with proton
+*
+      COMMON /gen_run_cntrl/ gen_run_starting_event,
+     &     gen_run_stopping_event,
+     &     gen_run_enable,
+     &     gen_run_triggered,
+     &     gen_run_analyzed,
+     &     gen_run_hist_dump_interval,
+     $     gen_analyze_beamline,
+     $     gen_bigcal_mc
+*
+*-shorter names for command line input
+      integer grun,gstart,gstop,gdump,gtrig1,gtrig2,gtrig3,gtrig4 ! aliases
+      integer gtrig5,gtrig6,gtrig7,gtrig8,gbeam,gmc
+      equivalence (grun,gen_run_number)
+      equivalence (gstart,gen_run_starting_event)
+      equivalence (gstop,gen_run_stopping_event)
+      equivalence (gdump,gen_run_hist_dump_interval)
+      equivalence (gtrig1,gen_run_enable(0))
+      equivalence (gtrig2,gen_run_enable(1))
+      equivalence (gtrig3,gen_run_enable(2))
+      equivalence (gtrig4,gen_run_enable(3))
+      equivalence (gtrig5,gen_run_enable(4))
+      equivalence (gtrig6,gen_run_enable(5))
+      equivalence (gtrig7,gen_run_enable(6))
+      equivalence (gtrig8,gen_run_enable(7))
+      equivalence (gbeam,gen_analyze_beamline)
+      equivalence (gmc,gen_bigcal_mc)
+
+*
+*     CTPTYPE=parm
+*
+      real*4 gps1,gps2,gps3,gps4,gps5,gps6,gps7  !prescale factors (1-S1S0x1,2-s1s0x2,3-bigcal,4-coin1,5-coin2,6-BC cosmics,7-LED)
+*
+      common/gen_prescales/ gps1,gps2,gps3,gps4,gps5,gps6,gps7
+
+*
+*     CTPTYPE=parm
+*
+      integer gdebugdumpepics
+*
+      common/gen_debuggingstuff/ gdebugdumpepics
+
+****************************end: gen_run_info.cmn ***********************

@@ -1,0 +1,39 @@
+Changes were made to the following files:
+
+etc/Makefile.variables :
+Made it use gfortran NOT g77
+
+SANE/sane_ntup_init.f :
+Added new ntuple (3) 
+Around line 160
+
+SANE/sane_ntup_open.f :
+Added ntuple definition
+around line 417
+
+SANE/sane_ntuple_keep.f :
+Used old version .... 
+
+ENGINE/g_analyze_scalers_by_banks.f :
+Added some extra includes and added scaler dump to a text file
+at the very end of the subroutine.
+
+ENGINE/g_initialize.f :
+Opened output file for scalers
+
+INCLUDE/insane_scalers.cmn
+Added file for scaler output
+
+INCLUDE/gen_scalers_cmn
+Added new scaler stuff at line 104
+
+ENGINE/g_reconstruction.f
+Commented out lines around 158 which do pedestal stuff 
+in order to leave the pedestal events in the data.
+
+SANE/sane_keep_results.f :
+Commented out line to keep event type 4 (pedestal)
+
+SANE/sane_ntup_open.f : 
+Added common block GEN_BEAM
+

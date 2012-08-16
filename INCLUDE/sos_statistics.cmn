@@ -1,0 +1,193 @@
+*      sos_statistics.cmn
+*      common blocks containing event statistics for s_reconstruction
+* $Log: sos_statistics.cmn,v $
+* Revision 1.13  2003/09/05 20:41:27  jones
+* Merge in online03 changes (mkj)
+*
+* Revision 1.12.2.1  2003/04/02 22:26:28  cdaq
+* added some variables for scint. effic tests (from oct 1999 online) - JRA
+*
+* Revision 1.12  1996/09/04 16:31:47  saw
+* (SAW) Change ' to '' in comments
+*
+* Revision 1.11  1996/01/17 15:07:45  cdaq
+* (JRA) Remove some obsolete common blocks
+*
+* Revision 1.10  1995/09/01 13:04:45  cdaq
+* (JRA) Add counter efficiency variables
+*
+* Revision 1.9  1995/08/11  16:36:47  cdaq
+* (JRA) Add sstat_mineff as a ctp parameter
+*
+* Revision 1.8  1995/07/28  14:42:37  cdaq
+* (JRA) Add pos/neg/both good arrays
+*
+* Revision 1.7  1995/05/22  19:02:13  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+* Fix a conflicting common block name
+*
+* Revision 1.6  1995/04/06  20:21:08  cdaq
+* (SAW) Remove hms isms and hardwired array sizes
+*
+* Revision 1.5  1995/03/13  19:15:42  cdaq
+* (JRA) Add many new statistics
+*
+* Revision 1.4  1994/11/21  18:02:39  cdaq
+* * (SPB) Recopied from hms file and modified names for SOS
+*
+* Revision 1.3  1994/08/05  21:19:32  cdaq
+* (SAW) Add makereg directive with required include files
+*       Add "CTPTYPE=event" directive for auto generation of CTP reg calls
+*
+* Revision 1.2  1994/06/14  03:34:25  cdaq
+* (DFG) add chamber efficiency and sigma
+*
+* Revision 1.1  1994/06/07  02:00:48  cdaq
+* Initial revision
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'sos_data_structures.cmn'
+
+*
+*     CTPTYPE=parm
+*
+      real*4 sstat_maxchisq
+      real*4 sstat_slop
+      real*4 sstat_mineff
+*
+*     CTPTYPE=event
+*
+      integer*4 sstat_numevents
+      integer*4 sstat_trk(snum_scin_planes,snum_scin_elements)
+      integer*4 sstat_poshit(snum_scin_planes,snum_scin_elements)
+      integer*4 sstat_neghit(snum_scin_planes,snum_scin_elements)
+      integer*4 sstat_orhit(snum_scin_planes,snum_scin_elements)
+      integer*4 sstat_andhit(snum_scin_planes,snum_scin_elements)
+      integer*4 sstat_trksum(snum_scin_planes)
+      integer*4 sstat_possum(snum_scin_planes)
+      integer*4 sstat_negsum(snum_scin_planes)
+      integer*4 sstat_orsum(snum_scin_planes)
+      integer*4 sstat_andsum(snum_scin_planes)
+      real*4 sstat_peff(snum_scin_planes,snum_scin_elements)
+      real*4 sstat_neff(snum_scin_planes,snum_scin_elements)
+      real*4 sstat_oeff(snum_scin_planes,snum_scin_elements)
+      real*4 sstat_aeff(snum_scin_planes,snum_scin_elements)
+      real*4 sstat_poseff(snum_scin_planes)
+      real*4 sstat_negeff(snum_scin_planes)
+      real*4 sstat_oreff(snum_scin_planes)
+      real*4 sstat_andeff(snum_scin_planes)
+      real*4 seff_s1
+      real*4 seff_s2
+      real*4 seff_stof
+      real*4 seff_4_of_4
+      real*4 seff_3_of_4
+
+      common/sscin_statistics/
+     &  sstat_numevents,
+     &  sstat_trk,         !# of times track points near center of scin.
+     &  sstat_poshit,      !# of times the pos tube on scintillator fired
+     &  sstat_neghit,      !# of times the pos tube on scintillator fired
+     &  sstat_orhit,       !# of times either tube fired
+     &  sstat_andhit,      !# of times both tubes fired
+     &  sstat_trksum,      !summed over all counters on plane
+     &  sstat_possum,      !summed over all counters on plane
+     &  sstat_negsum,      !summed over all counters on plane
+     &  sstat_orsum,       !summed over all counters on plane
+     &  sstat_andsum,      !summed over all counters on plane
+     &  sstat_peff,        !pos efficiency for given counter.
+     &  sstat_neff,        !neg efficiency for given counter.
+     &  sstat_oeff,        !or  efficiency for given counter.
+     &  sstat_aeff,        !and efficiency for given counter.
+     &  sstat_poseff,      !efficiency over all counters on plane
+     &  sstat_negeff,      !efficiency over all counters on plane
+     &  sstat_oreff,       !efficiency over all counters on plane
+     &  sstat_andeff,      !efficiency over all counters on plane
+     &  sstat_slop,        !distance allowed from center of scintillator.
+     &  sstat_mineff,      !give warning if effic. < sstat_mineff
+     &  sstat_maxchisq,    !maximum chisq allowed to use track for eff. calc.
+     &  seff_s1,           !calculated trigger eff. for s1 =(s1x .or. s1y).
+     &  seff_s2,           !calculated trigger eff. for s2 =(s2x .or. s2y).
+     &  seff_stof,         !calculated trigger eff. for stof =(s1 .and. s2).
+     &  seff_4_of_4,       !calculated trigger eff. for 4/4 planes.
+     &  seff_3_of_4        !calculated trigger eff. for 3/4 planes.
+
+
+*
+*     CTPTYPE=parm
+*
+      real*4 sstat_cal_maxchisq
+      real*4 sstat_cal_slop
+*
+*     CTPTYPE=event
+*
+      integer*4 sstat_cal_numevents
+      integer*4 sstat_cal_trk(smax_cal_columns,smax_cal_rows)
+      integer*4 sstat_cal_hit(smax_cal_columns,smax_cal_rows)
+      integer*4 sstat_cal_trksum(smax_cal_columns)
+      integer*4 sstat_cal_hitsum(smax_cal_columns)
+      real*4 sstat_cal_eff(smax_cal_columns,smax_cal_rows)
+      real*4 sstat_cal_effsum(smax_cal_columns)
+
+      common/scal_statistics/
+     &  sstat_cal_numevents,
+     &  sstat_cal_trk,         !# of times track points near center of block.
+     &  sstat_cal_hit,         !# of times the tube on block was over threshold.
+     &  sstat_cal_trksum,      !summed over all blocks on plane.
+     &  sstat_cal_hitsum,      !summed over all blocks on plane.
+     &  sstat_cal_eff,         !efficiency for a given block.
+     &  sstat_cal_effsum,      !efficiency over all counters on plane.
+     &  sstat_cal_slop,        !distance allowed from center of block.
+     &  sstat_cal_maxchisq     !maximum chisq allowed to use track for eff. calc.
+
+*
+*     CTPTYPE=event
+*
+      integer sbothgood(snum_scin_planes,snum_scin_elements)
+      integer sposgood(snum_scin_planes,snum_scin_elements)
+      integer sneggood(snum_scin_planes,snum_scin_elements)
+
+      common/sscin_posneg_stats/
+     &   sbothgood,
+     &   sposgood,
+     &   sneggood
+*
+*     CTPTYPE=parm
+*
+      real*4 sdc_min_eff(smax_num_dc_planes)   !''warning'' value for plane eff.
+*
+*     CTPTYPE=event
+*
+      integer*4 sdc_tot_events                 !total number of events examined
+      integer*4 sdc_events(smax_num_dc_planes) !counter of times plane was hit
+      integer*4 sdc_cham_hits(smax_num_chambers)
+      real*4 sdc_plane_eff(smax_num_dc_planes) !effic=events(pln)/tot_events
+      real*4 sdc_cham_eff(smax_num_chambers)
+
+      common/sdc_statistics/
+     &   sdc_tot_events,
+     &   sdc_events,
+     &   sdc_min_eff,
+     &   sdc_plane_eff,
+     &   sdc_cham_hits,
+     &   sdc_cham_eff
+
+* The logical variables just record if that particular event passed the test
+* for 'plane should have fired' and 'plane did fire'.  In CTP tests, we'll
+* apply additional cuts and check the efficiency.
+* 'Should' = event where other 3 hodoscope planes fired.
+* 'Did' = 'Should' && plane in question did fire.
+
+*
+*     CTPTYPE=event
+*
+      logical*4 strig_hodoshouldflag(snum_scin_planes)
+      logical*4 strig_hododidflag(snum_scin_planes)
+                                                  !(based on s1x,s1y... signals)
+      common/strig_hodostatistics/
+     &   strig_hodoshouldflag,
+     &   strig_hododidflag
+

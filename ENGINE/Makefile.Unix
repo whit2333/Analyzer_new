@@ -1,0 +1,371 @@
+#
+# $Log: Makefile.Unix,v $
+# Revision 1.28.16.10.2.1  2008/05/15 18:59:21  bhovik
+# 1'st version
+#
+# Revision 1.28.16.10  2007/11/03 08:40:02  cdaq
+# added gep_hist_fill.f
+#
+# Revision 1.28.16.9  2007/10/16 19:44:00  cdaq
+# fixed F1TDC_WINDOW_SIZE declaration
+#
+# Revision 1.28.16.8  2007/10/08 19:19:05  puckett
+# Added bad channel list handling for BigCal
+#
+# Revision 1.28.16.7  2007/09/13 04:02:17  brash
+# Implement some minor changes to fix Mac OS X runtime errors ... ejb
+#
+# Revision 1.28.16.6  2007/09/10 20:08:01  pcarter
+# Implemented changes to allow compilation on RHEL 3,4,5 and MacOSX
+#
+# Revision 1.28.16.5  2007/08/22 19:09:16  frw
+# added FPP
+#
+# Revision 1.29  2006/06/23 frw
+# added HMS FPP
+#
+# Revision 1.28.16.4  2007/08/15 21:40:59  puckett
+# Added call to skeleton routine "gep_init_histid" for coincidence histograms for later
+#
+# Revision 1.28.16.3  2007/08/07 18:55:30  puckett
+# added compiler directives for tree init routines
+#
+# Revision 1.28.16.2  2007/06/20 18:26:32  puckett
+# Added BigCal Monte Carlo analysis capability
+#
+# Revision 1.28.16.1  2007/05/15 02:55:01  jones
+# Start to Bigcal code
+#
+# Revision 1.28.8.2  2004/09/07 18:02:56  cdaq
+# updated to check magnets and beam positions
+#
+# Revision 1.28.8.1  2004/06/30 19:34:55  cdaq
+# Add g_examine_picture_event.f (DJG)
+#
+# Revision 1.28  2004/02/18 14:06:53  jones
+# Updated compile subroutines needed to allow the possibility of segmenting rzdat files.
+#
+# Revision 1.27.2.1  2003/06/26 12:39:53  cdaq
+# changes for e01-001  (mkj)
+#
+# Revision 1.27  2003/02/21 14:47:46  jones
+# Add s_fieldcorr.f to list of SOS files to compile
+#
+# Revision 1.26  2002/09/24 20:21:18  jones
+# add g_apply_offsets.f,h_apply_offsets.f,s_apply_offsets.f,h_fieldcorr.f
+#
+# Revision 1.25  1999/11/04 20:35:14  saw
+# Linux/G77 compatibility fixes
+#
+# Revision 1.24  1999/08/20 14:52:17  saw
+# Put in warning if Xscin_tdc_max is bigger than 4094
+#
+# Revision 1.23  1999/02/23 16:27:42  csa
+# Add new routines
+#
+# Revision 1.22  1999/01/21 21:39:01  saw
+# Clean up Include file rules
+#
+# Revision 1.21  1998/12/09 16:31:16  saw
+# Remove dependence on Csoft environment variable
+#
+# Revision 1.20  1998/12/07 22:11:16  saw
+# Initial setup
+#
+# Revision 1.19  1996/11/05 21:45:30  saw
+# (SAW) Add AIX and SunOS support and fixes for Linux
+#
+# Revision 1.18  1996/09/04 14:29:35  saw
+# (SAW) Add new routines, OSD switches, and Linux compatibility fixes
+#
+# Revision 1.17  1996/04/29 18:30:05  saw
+# (SAW) New makefile style
+#
+# Revision 1.16  1996/01/22 15:56:58  saw
+# (JRA) Add g_analyze_beam_pedestal, g_analyze_misc,
+#       g_calc_beam_pedestal, g_calc_bpm_pedestal,
+#       g_calc_raster_pedestal, g_target_initialize, g_trans_misc
+#
+# Revision 1.15  1996/01/16 16:03:10  cdaq
+# (SAW) Add g_scaler_reset_event, g_extract_kinematics, g_output_thresholds,
+#       g_examine_go_info, g_kludgeup_kinematics, s_sv_nt_init, s_sv_nt_keep,
+#       s_sv_nt_register, s_sv_nt_shutdown
+#
+# Revision 1.14  1995/07/28  14:13:32  cdaq
+# (SAW) Add new routines, SGI/IRIX compatibility
+#
+# Revision 1.13  1995/05/24  13:20:54  cdaq
+# Cosmetic changes
+#
+# Revision 1.12  1995/05/11  19:03:10  cdaq
+# (SAW) Compile c_physics.f and some ntuple variable registration routines
+#
+# Revision 1.11  1995/04/06  20:05:30  cdaq
+# (SAW) Add pedestal routines
+#
+# Revision 1.10  1995/03/08  20:32:52  cdaq
+# (SAW) Add -f switch on include file copy commands
+#
+# Revision 1.9  1995/01/27  20:48:08  cdaq
+# (SAW) Add sieve slit routines
+#
+# Revision 1.8  1994/11/23  15:37:39  cdaq
+# (SAW) Update link flags for ULTRIX
+#
+# Revision 1.7  1994/08/18  04:22:46  cdaq
+# (SAW) Call makereg generated routines to register variables
+#
+# Revision 1.6  1994/08/04  03:49:53  cdaq
+# (SAW) Add libhack.a to library list
+#
+# Revision 1.5  1994/07/07  15:18:22  cdaq
+# (SAW) Fix a bug so that all sources not get compiled
+#
+# Revision 1.4  1994/06/22  21:04:29  cdaq
+# (SAW) Add g_analyze_scalers.f
+#
+# Revision 1.3  1994/06/14  19:30:33  cdaq
+# (SAW) Add g_dump_histograms, remove g_open_hbook_file
+#
+# Revision 1.2  1994/06/07  18:47:48  cdaq
+# Add examine_event routines
+#
+# Revision 1.1  1994/04/15  20:27:32  cdaq
+# Initial revision
+#
+NEWSTYLE = 1
+include ../../etc/Makefile
+include ../../etc/Makefile.flags
+
+decode_source = g_decode_clear.f g_decode_config.f g_decode_event_by_banks.f \
+	g_decode_fb_bank.f g_decode_fb_detector.f \
+	g_decode_init.f g_analyze_scalers.f
+general_source = $(decode_source) g_clear_event.f \
+	g_init_filenames.f g_initialize.f g_keep_results.f \
+	g_open_source.f g_proper_shutdown.f g_reconstruction.f \
+	g_reset_event.f g_register_variables.f \
+	g_examine_control_event.f \
+	g_examine_physics_event.f g_dump_histograms.f g_analyze_pedestal.f \
+	g_calc_pedestal.f g_ctp_database.f g_scaler_reset_event.f \
+	g_extract_kinematics.f g_output_thresholds.f \
+	g_examine_go_info.f g_kludgeup_kinematics.f \
+	g_analyze_beam_pedestal.f g_analyze_misc.f \
+	g_calc_beam_pedestal.f g_calc_bpm_pedestal.f g_calc_raster_pedestal.f \
+	g_target_initialize.f g_trans_misc.f g_dump_peds.f g_get_next_event.f \
+	g_preproc_event.f g_preproc_open.f g_write_event.f \
+	g_examine_epics_event.f g_examine_picture_event.f\
+	g_analyze_scaler_bank.f g_analyze_scalers_by_banks.f g_apply_offsets.f \
+	h_field03.f params03.f g_tree_init.f
+hms_source = h_clear_event.f h_initialize.f h_keep_results.f \
+	h_proper_shutdown.f h_reset_event.f \
+	h_register_variables.f h_apply_offsets.f h_fieldcorr.f \
+	h_ntuple_close.f h_ntuple_open.f h_ntuple_change.f \
+	h_tree_init.f       
+sos_source = s_clear_event.f s_initialize.f s_keep_results.f \
+	s_proper_shutdown.f s_reset_event.f \
+	s_register_variables.f s_apply_offsets.f s_fieldcorr.f \
+	s_ntuple_close.f s_ntuple_open.f s_ntuple_change.f       
+coin_source = c_register_variables.f c_clear_event.f c_initialize.f \
+	c_keep_results.f c_proper_shutdown.f c_reconstruction.f \
+	c_reset_event.f c_physics.f \
+	c_ntuple_close.f c_ntuple_open.f c_ntuple_change.f    
+bigcal_source = b_clear_event.f b_initialize.f b_keep_results.f b_ntuple_change.f \
+	b_ntuple_close.f b_ntuple_open.f b_proper_shutdown.f b_register_variables.f \
+	b_reset_event.f bigcal_mc_reconstruction.f b_tree_init.f
+gep_source = gep_clear_event.f gep_initialize.f gep_keep_results.f gep_ntuple_change.f \
+	gep_ntuple_close.f gep_ntuple_open.f gep_physics.f gep_proper_shutdown.f \
+	gep_reconstruction.f gep_register_variables.f gep_reset_event.f \
+	gep_tree_init.f gep_init_histid.f gep_check_bigcal.f gep_fill_hist.f
+ntuple_source = g_ntuple_init.f g_ntuple_shutdown.f \
+	c_ntuple_clear.f c_ntuple_init.f c_ntuple_keep.f \
+	c_ntuple_register.f c_ntuple_shutdown.f \
+	h_ntuple_clear.f h_ntuple_init.f h_ntuple_keep.f \
+	h_ntuple_register.f h_ntuple_shutdown.f \
+	s_ntuple_clear.f s_ntuple_init.f s_ntuple_keep.f \
+	s_ntuple_register.f s_ntuple_shutdown.f \
+	h_sv_nt_init.f h_sv_nt_keep.f \
+	h_sv_nt_register.f h_sv_nt_shutdown.f \
+	s_sv_nt_init.f s_sv_nt_keep.f \
+	s_sv_nt_register.f s_sv_nt_shutdown.f \
+	h_fpp_nt_change.f h_fpp_nt_close.f \
+	h_fpp_nt_init.f h_fpp_nt_keep.f \
+	h_fpp_nt_open.f h_fpp_nt_register.f \
+	h_fpp_nt_shutdown.f \
+	b_ntuple_clear.f b_ntuple_init.f b_ntuple_keep.f \
+	b_ntuple_register.f b_ntuple_shutdown.f \
+	gep_ntuple_clear.f gep_ntuple_init.f gep_ntuple_keep.f \
+	gep_ntuple_register.f gep_ntuple_shutdown.f
+gmakeregstuff = r_gen_filenames.f r_gen_run_info.f r_gen_event_info.f \
+	r_gen_scalers.f r_gen_run_pref.f r_gen_data_structures.f \
+	r_gen_decode_F1tdc.f
+cmakeregstuff = r_coin_filenames.f r_c_ntuple.f r_coin_data_structures.f
+hmakeregstuff = r_h_ntuple.f r_h_sieve_ntuple.f r_hms_data_structures.f \
+ 	r_hms_fpp_event.f r_h_fpp_ntuple.f
+smakeregstuff = r_s_ntuple.f r_sos_data_structures.f
+bmakeregstuff = r_b_ntuple.f r_bigcal_data_structures.f r_bigcal_filenames.f
+gepmakeregstuff = r_gep_ntuple.f r_gep_filenames.f r_gep_data_structures.f
+replay_source = engine.f
+
+libsources =  $(coin_source) $(sos_source) $(hms_source) $(general_source) \
+	$(bigcal_source) $(gep_source) $(ntuple_source) $(gmakeregstuff) \
+	$(cmakeregstuff) $(hmakeregstuff) $(smakeregstuff)  $(bmakeregstuff) \
+	$(gepmakeregstuff)
+
+ifeq ($(MYOS),AIX)
+xlibsources := $(filter-out g_decode_config.f,$(libsources))
+libsources = g_decode_config_aix.f $(xlibsources)
+../g_%_aix.f : ../g_%.f
+	sed -e "s/READONLY/action='read'/"< $< > $@	
+endif
+
+ifeq ($(MYOS),Linux)
+xlibsources := $(filter-out g_decode_config.f,$(libsources))
+libsources = g_decode_config_linux.f $(xlibsources)
+# F2C doesn't know about READONLY
+../g_%_linux.f : ../g_%.f
+	sed -e "s/,READONLY//" $< > $@
+endif
+
+#short_names = g_xyz_sph.f g_shift_len.f g_sort.f g_rep_err.f g_prepend.f \
+#	g_normalize.f g_add_path.f g_decode_clear.f
+sources = $(libsources) $(replay_source)
+#engine_members:= $(patsubst %.f, libengine.a(%.o), $(libsources))
+lib_targets := $(patsubst %.f, libengine.a(%.o), $(sources))
+bin_targets = engine
+
+#install-dirs := lib bin
+install-dirs := lib
+
+DEPLIBS = $(LIBROOT)/libengine.a \
+	$(LIBROOT)/libhtracking.a $(LIBROOT)/libstracking.a \
+	$(LIBROOT)/libengine.a \
+	$(LIBROOT)/libtracking.a $(LIBROOT)/libhack.a \
+	$(LIBROOT)/libbtracking.a $(LIBROOT)/libsanetracking.a \
+	$(LIBROOT)/libutils.a #$(LIBROOT)/libctp.a
+#$(LIBROOT)/libgmc.a 
+
+ifeq ($(MYOS),HPUX)
+#  OTHERLIBS = -Wl,-L$(CODA)/HP_UX/lib \
+#	-lcoda -Wl,-L$(CERN_ROOT)/lib -lpacklib
+  OTHERLIBS = -Wl,-L$(CERN_ROOT)/lib -lpacklib -lU77 -lm
+endif
+
+ifeq ($(MYOS),ULTRIX)
+  RPCLIBDIR = /usr/site1/rpc/usr/lib
+  OTHERLIBS = -L$(CODA)/ULTRIX/lib -lcoda -L$(CERN_ROOT)/lib -lpacklib \
+	-L$(RPCLIBDIR) -lrpclib
+endif
+
+ifeq ($(MYOS),OSF1)
+  OTHERLIBS = -L$(CERN_ROOT)/lib -lpacklib
+  FLDFLAGS= -g -Wl,-taso
+endif
+
+ifeq ($(MYOS),IRIX)
+  RPCLIBDIR = /usr/lib
+  OTHERLIBS = -L$(CERN_ROOT)/lib -lpacklib -L$(RPCLIBDIR) -lrpcsvc
+endif
+
+ifeq ($(MYOS),Linux)
+  ifeq ($(MYREALOS),Darwin)
+     OTHERLIBS = -L$(CERN_ROOT)/lib -lpacklib -lc -lm
+  else
+     OTHERLIBS = -L$(CERN_ROOT)/lib -lpacklib -lc -lm -lnsl
+  endif
+  DEPLIBS := $(DEPLIBS) $(LIBROOT)/libport.a
+
+$(LIBROOT)/libport.a:
+	$(MAKE) -C ../../PORT 
+endif
+
+ifeq ($(MYOS),SunOS)
+  OTHERLIBS = -L$(LIBROOT) -lctpclient -lctp -L$(CERN_ROOT)/lib \
+	-lgeant$(GEANTVER) -lpawlib -lgraflib -lgrafX11 -lpacklib -lmathlib \
+	-lnsl -lsocket -lX11
+endif
+
+ifeq ($(MYOS),AIX)
+  OTHERLIBS = -L$(CERN_ROOT)/lib -lpacklib
+  DEPLIBS := $(DEPLIBS) $(LIBROOT)/libport.a
+endif
+
+#ifeq ($(MYOS),Linux)
+## F2C doesn't know about READONLY
+#../g_decode_config.f : $(NFSDIRECTORY)/ENGINE/g_decode_config.f
+#	sed -e "s/,READONLY//" $< > $@
+#endif
+
+#default:
+#	@echo "nothing to make"
+
+##library: libengine.a
+
+##libengine.a: $(engine_members)
+
+$(LIBROOT)/libutils.a:
+	$(MAKE) -C ../../UTILSUBS
+
+$(LIBROOT)/libtracking.a:
+	$(MAKE) -C ../../TRACKING
+
+$(LIBROOT)/libhtracking.a:
+	$(MAKE) -C ../../HTRACKING
+
+$(LIBROOT)/libstracking.a:
+	$(MAKE) -C ../../STRACKING
+
+$(LIBROOT)/libbtracking.a:
+	$(MAKE) -C ../../BTRACKING
+
+$(LIBROOT)/libsanetracking.a:
+	$(MAKE) -C ../../SANE
+
+$(LIBROOT)/libctp.a:
+	$(MAKE) -C ../../CTP
+
+$(LIBROOT)/libhack.a:
+	$(MAKE) -C ../../HACK
+
+ifeq ($(MYOS),OSF1)
+engine: $(DEPLIBS)
+	$(AR) x $(LIBROOT)/libengine.a engine.o
+	$(FC) $(FLDFLAGS) -o engine engine.o $(DEPLIBS) $(OTHERLIBS)
+	$(RM) engine.o
+else
+engine: $(DEPLIBS)
+	$(AR) x $(LIBROOT)/libengine.a engine.o
+	$(FC) $(FFLAGS) -o engine engine.o $(DEPLIBS) $(OTHERLIBS)
+	$(RM) engine.o
+endif
+
+ifdef NFSDIRECTORY
+../%.f : $(NFSDIRECTORY)/ENGINE/%.f
+	ln -s $< $@
+
+.PRECIOUS: ../%.f
+else
+#
+# Rule for making the register subroutines
+#
+../r_%.f : ../%.cmn $(MAKEREG)
+	(cd .. ; $(MAKEREG) $(<F) -o $(@F) -e /dev/null)
+
+.PRECIOUS: ../r_%.f
+endif
+
+%.cwn:: ../%.cwn
+	$(CP) $< $@
+
+%.cmn ../%.cmn:: ../../INCLUDE/%.cmn
+	$(CP) $< $@
+
+%.dec ../%.dec:: ../../INCLUDE/%.dec
+	$(CP) $< $@
+
+%.par ../%.par:: ../../INCLUDE/%.par
+	$(CP) $< $@
+
+%.dte ../%.dte:: ../../INCLUDE/%.dte
+	$(CP) $< $@
+
+include $(sources:.f=.d)

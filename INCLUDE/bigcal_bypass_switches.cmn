@@ -1,0 +1,59 @@
+*
+*     CTPTYPE=parm
+*     
+      integer*4 bbypass_prot
+      integer*4 bbypass_rcs
+      integer*4 bbypass_sum8
+      integer*4 bbypass_sum64
+      integer*4 bbypass_find_clusters
+      integer*4 bbypass_calc_cluster_time
+      integer*4 bbypass_calc_shower_coord
+      integer*4 bbypass_prune_clusters
+      integer*4 b_prune_flags(8)
+      integer*4 bbypass_calc_physics
+      integer*4 bdebug_print_bad
+      integer*4 bdebug_print_adc
+      integer*4 bdebug_print_tdc
+      integer*4 bdebug_print_trig
+      integer*4 bdebug_print_clusters
+      integer*4 b_use_bad_chan_list
+      integer*4 bigcal_do_calibration
+      integer*4 bigcal_do_time_calib
+      integer*4 bigcal_min_calib_events
+      integer*4 b_use_peds_in_hist
+      integer*4 b_use_size_measurements
+      integer*4 b_suppress_annoying_pulser
+      integer*4 b_recon_using_map
+      integer*4 b_use_distcorr
+      integer*4 b_fix_double_ped
+c      integer*4 bmake_tdc_hist
+c      integer*4 bmake_ttdc_hist
+      integer*4 bluno ! logical unit number for debugging output
+      common/bigcal_bypass_switches/
+     $     bbypass_prot,
+     $     bbypass_rcs,
+     $     bbypass_sum8,
+     $     bbypass_sum64,
+     $     bbypass_find_clusters,
+     $     bbypass_calc_cluster_time,
+     $     bbypass_calc_shower_coord,
+     $     bbypass_prune_clusters,
+     $     b_prune_flags,
+     $     bbypass_calc_physics,
+     $     bdebug_print_bad,
+     $     bdebug_print_adc,
+     $     bdebug_print_tdc,
+     $     bdebug_print_trig,
+     $     bdebug_print_clusters,
+     $     b_use_bad_chan_list,
+     $     bigcal_do_calibration,
+     $     bigcal_do_time_calib,
+     $     bigcal_min_calib_events,
+     $     b_use_peds_in_hist,
+     $     b_use_size_measurements,
+     $     b_suppress_annoying_pulser,
+     $     b_recon_using_map,
+     $     b_use_distcorr,
+     $     b_fix_double_ped,
+     $     bluno
+      

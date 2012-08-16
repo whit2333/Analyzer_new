@@ -1,0 +1,320 @@
+*
+*     CTPTYPE=parm
+*
+      integer BMAX_Ntuple_size
+      parameter (BMAX_Ntuple_size=100)
+      integer default_b_Ntuple_ID
+      parameter (default_b_Ntuple_ID=9030)
+*     array dimensions for cluster ntuple: 
+      integer maxnclust
+      parameter(maxnclust=50)
+      integer maxncellclust
+      parameter(maxncellclust=50)
+*     array dimensions for cosmics ntuple:
+      integer maxahit
+      parameter(maxahit=1856)
+      integer maxthit
+      parameter(maxthit=3072)
+      integer maxtahit
+      parameter(maxtahit=38)
+      integer maxtthit
+      parameter(maxtthit=42*8)
+
+      logical b_Ntuple_exists
+      integer b_Ntuple_ID
+      integer b_Ntuple_size
+      integer b_Ntuple_IOchannel
+      integer bigcal_ntuple_type 
+      character*80 b_Ntuple_name
+      character*80 b_Ntuple_title
+      character*132 b_Ntuple_directory
+      character*256 b_Ntuple_file
+c      character*256 b_tree_filename
+      character*8 b_Ntuple_tag(BMAX_Ntuple_size)
+      integer b_Ntuple_max_segmentevents
+      integer b_ntuple_switch ! 0 means is off.
+*
+*     CTPTYPE=event
+*
+      integer b_Ntuple_segmentevents
+      integer b_Ntuple_filesegments
+      real b_Ntuple_contents(BMAX_Ntuple_size)
+
+      common/BIGCAL_Ntuple/
+     $     b_Ntuple_exists,b_Ntuple_ID,b_Ntuple_size,b_Ntuple_IOchannel,
+     $     b_Ntuple_name,b_Ntuple_title,b_Ntuple_directory,
+     $     b_Ntuple_file,b_Ntuple_tag,
+     $     b_Ntuple_max_segmentevents,
+     $     b_Ntuple_segmentevents,b_Ntuple_filesegments,
+     $     b_Ntuple_contents,bigcal_ntuple_type,b_ntuple_switch
+
+*     Basic event info:
+
+      integer*4 bgid ! copy of gen_event_id_number
+      integer*4 bgtype ! copy of gen_event_type
+      integer*4 btrigtype
+      real*4 btrigtime ! coincidence time, set a reference for all other tdcs
+      common/bevinfo/
+     $     bgid,
+     $     bgtype,
+     $     btrigtype,
+     $     btrigtime
+
+*     ADC related quantities
+
+      integer*4 nclust
+      integer*4 ncellclust(maxnclust)
+      integer*4 ncellbad(maxnclust)
+      integer*4 ncellx(maxnclust)
+      integer*4 ncelly(maxnclust)
+      integer*4 iycell(maxncellclust,maxnclust)
+      integer*4 ixcell(maxncellclust,maxnclust)
+      logical cellbad(maxncellclust,maxnclust)
+      real*4 xcell(maxncellclust,maxnclust)
+      real*4 ycell(maxncellclust,maxnclust)
+      real*4 eblock(maxncellclust,maxnclust)
+      real*4 ablock(maxncellclust,maxnclust)
+      real*4 xmoment(maxnclust)
+      real*4 ymoment(maxnclust)
+      real*4 eclust(maxnclust)
+      real*4 aclust(maxnclust)
+      real*4 xclust(maxnclust)
+      real*4 yclust(maxnclust)
+      double precision NN_delX
+      double precision NN_delY
+      double precision NN_delE
+
+      common/clustblock/
+     $     NN_delX,
+     $     NN_delY,
+     $     NN_delE,
+     $     nclust,
+     $     ncellclust,
+     $     ncellbad,
+     $     ncellx,
+     $     ncelly,
+     $     iycell,
+     $     ixcell,
+     $     cellbad,
+     $     xcell,
+     $     ycell,
+     $     eblock,
+     $     ablock,
+     $     xmoment,
+     $     ymoment,
+     $     eclust,
+     $     aclust, 
+     $     xclust,
+     $     yclust
+
+      integer*4 nclust8
+      integer*4 ncell8clust(maxnclust)
+      integer*4 irow8hit(10,maxnclust)
+      integer*4 icol8hit(10,maxnclust)
+      integer*4 nhit8clust(10,maxnclust)
+      real*4 s8(10,maxnclust)
+      real*4 tcell8(10,8,maxnclust)
+      real*4 tclust8(maxnclust)
+      real*4 tcut8(maxnclust)
+      real*4 tcut8cor(maxnclust)
+      real*4 trms8(maxnclust)
+      common/clusttdc/
+     $     nclust8,
+     $     ncell8clust,
+     $     irow8hit,
+     $     icol8hit,
+     $     nhit8clust,
+     $     s8,
+     $     tcell8,
+     $     tclust8,
+     $     tcut8,
+     $     tcut8cor,
+     $     trms8
+
+*     trigger related quantities
+
+      integer*4 nclust64 ! copy of nclust
+      integer*4 ncell64clust(maxnclust)            
+      integer*4 irow64hit(6,maxnclust)
+      integer*4 icol64hit(6,maxnclust)
+      integer*4 nhit64clust(6,maxnclust)
+      real*4 tcell64(6,8,maxnclust)
+      real*4 a64(6,maxnclust)
+      real*4 s64(6,maxnclust)
+      real*4 tclust64(maxnclust)
+      real*4 tcut64(maxnclust)
+      real*4 tcut64cor(maxnclust)
+      real*4 trms64(maxnclust)
+      common/clusttrig/
+     $     nclust64,
+     $     ncell64clust,
+     $     irow64hit,
+     $     icol64hit,
+     $     nhit64clust,
+     $     tcell64,
+     $     a64,
+     $     s64,
+     $     tclust64,
+     $     tcut64,
+     $     tcut64cor,
+     $     trms64
+      
+*     reconstructed physics quantities
+      integer*4 ntrack
+      integer*4 ibest
+      real*4 thetarad(maxnclust)
+      real*4 phirad(maxnclust)
+      real*4 energy(maxnclust) ! corrected for eloss
+      real*4 xface(maxnclust)
+      real*4 yface(maxnclust)
+      real*4 zface(maxnclust)
+      real*4 px(maxnclust)
+      real*4 py(maxnclust)
+      real*4 pz(maxnclust)
+      real*4 ctime_clust(maxnclust)
+      real*4 chi2clust(maxnclust)
+      real*4 chi2contr(6,maxnclust)
+      common/clustphys/
+     $     ntrack,
+     $     ibest,
+     $     thetarad,
+     $     phirad,
+     $     energy,
+     $     xface,
+     $     yface,
+     $     zface,
+     $     px,
+     $     py,
+     $     pz,
+     $     ctime_clust,
+     $     chi2clust,
+     $     chi2contr
+
+*     bad cluster flags:
+      
+      integer*4 nmax
+      logical edge_max(maxnclust)
+      logical not_enough(maxnclust)
+      logical too_long_x(maxnclust)
+      logical too_long_y(maxnclust)
+      logical below_thresh(maxnclust)
+      logical above_max(maxnclust)
+      logical second_max(maxnclust)
+      common/bad_clust/
+     $     nmax,
+     $     edge_max,
+     $     not_enough,
+     $     too_long_x,
+     $     too_long_y,
+     $     below_thresh,
+     $     above_max,
+     $     second_max
+*     For online basic detector checks, include a list of additional basic variables:
+      integer*4 ngooda
+      integer*4 ngoodt
+      integer*4 ngoodta
+      integer*4 ngoodtt
+      integer*4 irowmax
+      integer*4 icolmax
+      real*4 max_adc
+      common/bhits/
+     $     ngooda,
+     $     ngoodt,
+     $     ngoodta,
+     $     ngoodtt,
+     $     irowmax,
+     $     icolmax,
+     $     max_adc
+
+*     in case of Monte Carlo analysis, actual event info for comparison to reconstructed:
+*     one "vertex" per event is assumed. Fill if and only if cluster ntuple gets filled.
+      integer*4 evid_g
+      integer*4 ntrk_g
+      integer*4 pid_g(maxnclust)
+      real*4 xvertex_g
+      real*4 yvertex_g
+      real*4 zvertex_g
+      real*4 pxgeant(maxnclust)
+      real*4 pygeant(maxnclust)
+      real*4 pzgeant(maxnclust)
+      real*4 xgeant(maxnclust) ! x in calo-centered coordinate system
+      real*4 ygeant(maxnclust) ! y in calo-centered coordinate system
+      real*4 egeant(maxnclust) ! actual energy of particle
+      real*4 pgeant(maxnclust) ! magnitude of momentum of particle
+      real*4 gthetarad(maxnclust)
+      real*4 gphirad(maxnclust)
+      common/MC_Clust/
+     $     evid_g,
+     $     ntrk_g,
+     $     pid_g,
+     $     xvertex_g,
+     $     yvertex_g,
+     $     zvertex_g,
+     $     pxgeant,
+     $     pygeant,
+     $     pzgeant,
+     $     xgeant,
+     $     ygeant,
+     $     egeant,
+     $     pgeant,
+     $     gthetarad,
+     $     gphirad
+
+*     in case of Coincidence analysis, HMS info for comparison to reconstructed: 
+      real*4 TH_HMS
+      real*4 PH_HMS
+      real*4 E_HMS ! cal. using hsp
+      real*4 X_HMS
+      real*4 Y_HMS
+      real*4 dPel_HMS ! difference between Pel(htheta) and PHMS, normalized to hpcentral
+      common/hmsblk/
+     $     TH_HMS,
+     $     PH_HMS,
+     $     E_HMS,
+     $     X_HMS,
+     $     Y_HMS,
+     $     dPel_HMS
+
+      integer*4 nahit
+      integer*4 xa(maxahit)
+      integer*4 ya(maxahit)
+      integer*4 aa(maxahit)
+      integer*4 nthit
+      integer*4 xt(maxthit)
+      integer*4 yt(maxthit)
+      integer*4 hn(maxthit)
+      integer*4 tt(maxthit)
+      integer*4 ntahit
+      integer*4 xta(maxtahit)
+      integer*4 yta(maxtahit)
+      integer*4 taa(maxtahit)
+      integer*4 ntthit
+      integer*4 xtt(maxtthit)
+      integer*4 ytt(maxtthit)
+      integer*4 hnt(maxtthit)
+      integer*4 ttt(maxtthit)
+
+      common/cosmic_hits/
+     $     nahit,
+     $     xa,
+     $     ya,
+     $     aa,
+     $     nthit,
+     $     xt,
+     $     yt,
+     $     hn,
+     $     tt,
+     $     ntahit,
+     $     xta,
+     $     yta,
+     $     taa,
+     $     ntthit,
+     $     xtt,
+     $     ytt,
+     $     hnt,
+     $     ttt
+
+*
+*     CTPTYPE=parm
+*
+

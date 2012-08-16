@@ -1,0 +1,36 @@
+*---------------------------------------------------------------------------
+*-- file: hack_.cmn
+*-- include file for USER DEVOLOPMENT common block definitions;
+*     used in files HACK_*.F
+*-- The parameter hack_enable must be set to .ne. 0 to enable execution of
+*     hack_anal subroutine for each event.
+*-- any additional arrays or variables my be added by the user
+*---------------------------------------------------------------------------
+* $Log: hack_.cmn,v $
+* Revision 1.3  1996/01/17 15:58:04  cdaq
+* (JRA) Hacked it a bit
+*
+* Revision 1.2  1994/07/25 18:02:18  cdaq
+* (HB) New version
+*
+* Revision 1.1  1994/07/22  13:55:48  cdaq
+* Initial revision
+*
+*---------------------------------------------------------------------------
+*
+*     CTPTYPE=parm
+*
+      integer*4 hack_enable
+      common /hack_c/ hack_enable
+*
+*
+*     CTPTYPE=event
+*
+      integer hack_hmssc_au(16,4) !raw HMS-scintillator ADC up in fixed array
+      integer hack_hmssc_ad(16,4) !raw HMS-scintillator ADC down in fixed array
+      integer hack_hmssc_tu(16,4) !raw HMS-scintillator TDC up in fixed array
+      integer hack_hmssc_td(16,4) !raw HMS-scintillator TDC down in fixed array
+      integer hack_hmssc_go(16,4) !info about which ADC/TDC fired
+*
+      common/hack_copyeve_c/ hack_hmssc_au,hack_hmssc_ad,
+     & hack_hmssc_tu,hack_hmssc_td,hack_hmssc_go

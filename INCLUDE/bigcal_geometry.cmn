@@ -1,0 +1,47 @@
+*
+*     CTPTYPE=parm
+*
+      integer*4 BIGCAL_PROT_NCELL
+      parameter(BIGCAL_PROT_NCELL=1024)
+      integer*4 BIGCAL_RCS_NCELL
+      parameter(BIGCAL_RCS_NCELL=720)
+      integer*4 BIGCAL_ALL_NCELL
+      parameter(BIGCAL_ALL_NCELL=1744)
+
+      real*4 BIGCAL_PROT_XCENTER(BIGCAL_PROT_NCELL) 
+      real*4 BIGCAL_PROT_YCENTER(BIGCAL_PROT_NCELL)
+      real*4 BIGCAL_RCS_XCENTER(BIGCAL_RCS_NCELL) 
+      real*4 BIGCAL_RCS_YCENTER(BIGCAL_RCS_NCELL)
+
+      real*4 BIGCAL_ALL_XCENTER(BIGCAL_ALL_NCELL)
+      real*4 BIGCAL_ALL_YCENTER(BIGCAL_ALL_NCELL)
+      
+      real*4 BIGCAL_PROT_SIZE_X 
+      real*4 BIGCAL_PROT_SIZE_Y 
+      real*4 BIGCAL_PROT_SIZE_Z
+      real*4 BIGCAL_RCS_SIZE_X 
+      real*4 BIGCAL_RCS_SIZE_Y
+      real*4 BIGCAL_RCS_SIZE_Z
+      real*4 BIGCAL_PROT_SHIFT_X 
+      real*4 BIGCAL_PROT_SHIFT_Y 
+      real*4 BIGCAL_RCS_SHIFT_X 
+      real*4 BIGCAL_RCS_SHIFT_Y 
+
+      common/bigcal_geometry/
+     $     BIGCAL_PROT_XCENTER,
+     $     BIGCAL_PROT_YCENTER,
+     $     BIGCAL_RCS_XCENTER,
+     $     BIGCAL_RCS_YCENTER,
+     $     BIGCAL_ALL_XCENTER,
+     $     BIGCAL_ALL_YCENTER,
+     $     BIGCAL_PROT_SIZE_X,
+     $     BIGCAL_PROT_SIZE_Y,
+     $     BIGCAL_PROT_SIZE_Z,
+     $     BIGCAL_RCS_SIZE_X,
+     $     BIGCAL_RCS_SIZE_Y,
+     $     BIGCAL_RCS_SIZE_Z,
+     $     BIGCAL_PROT_SHIFT_X,
+     $     BIGCAL_PROT_SHIFT_Y,
+     $     BIGCAL_RCS_SHIFT_X,
+     $     BIGCAL_RCS_SHIFT_Y
+

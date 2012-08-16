@@ -1,0 +1,209 @@
+#
+# $Log: Makefile.Unix,v $
+# Revision 1.29.6.4.2.1  2008/10/21 20:33:17  cdaq
+# target recon with B field added
+#
+# Revision 1.29.6.4  2007/09/18 02:46:35  brash
+# Updates to FPP code to a) include simulated analyzers and b) fix bugs in FPP angle, zclose, and sclose calculations.
+#
+# Revision 1.29.6.3  2007/09/12 14:40:03  brash
+# *** empty log message ***
+#
+# Revision 1.29.6.2  2007/09/10 20:08:02  pcarter
+# Implemented changes to allow compilation on RHEL 3,4,5 and MacOSX
+#
+# Revision 1.29.6.1  2007/08/22 19:09:29  frw
+# added FPP
+#
+# Revision 1.30  2006/06/23 frw
+# add FPP files
+#
+# Revision 1.29  2005/03/23 16:33:32  jones
+# Add new code s_select_best_track_prune.f (P Bosted)
+#
+# Revision 1.28  2004/02/26 22:19:33  jones
+# add h_select_best_track_using_scin.o
+#
+# Revision 1.27  2003/04/01 15:20:55  jones
+#  fix spelling of h_sp_destroy.f
+#
+# Revision 1.26  2003/04/01 13:49:27  jones
+# Modifications to tracking codes.
+# Mainly fix problems at high rates. (M. E. Christy)
+#
+# Revision 1.25  2003/03/21 22:21:51  jones
+# Modified and rearrange routines to calibrate the HMS calorimeter (V. Tadevosyan)
+#
+# Revision 1.24  2002/12/20 21:53:32  jones
+# Modified by Hamlet for new HMS aerogel
+#
+# Revision 1.23  2002/11/11 18:48:27  jones
+# Modify Makefile.Unix to include hcal_clb_det.f and hcal_raw_thr.f
+#
+# Revision 1.22  1999/02/23 18:30:11  csa
+# Add h_satcorr
+#
+# Revision 1.21  1999/01/21 21:40:13  saw
+# Extra shower counter tube modifications
+#
+# Revision 1.20  1998/12/07 22:11:21  saw
+# Initial setup
+#
+# Revision 1.19  1996/11/08 20:33:53  saw
+# (SAW) Add AIX compatibility
+#
+# Revision 1.18  1996/09/04 14:25:57  saw
+# (SAW) Fixup some O. subdirectory errors
+#
+# Revision 1.17  1996/04/29 18:29:23  saw
+# (SAW) New makefile style
+#
+# Revision 1.16  1996/01/16 21:32:55  cdaq
+# (SAW) Use $(CP) instead of cp.  Add h_cer_eff, h_cer_eff_shutdown, h_init_cer,
+#       h_trans_cer, h_dc_eff, h_dc_eff_shutdown, h_dump_peds, h_dump_cal,
+#       h_report_bad_data, h_dc_trk_eff, h_dc_trk_eff_shutdown,
+#       h_find_easy_space_point, r_hms_cer_parms
+#
+# Revision 1.15  1995/07/20  14:27:40  cdaq
+# (SAW) Add option to get source via softlink to read only source tree
+#
+# Revision 1.14  1995/05/24  13:22:33  cdaq
+# Add h_trans_misc, h_fill_cal_hist, h_init_histid, r_hms_pedestals
+#
+# Revision 1.13  1995/04/06  20:07:31  cdaq
+# (SAW) Add pedestal routines
+#
+# Revision 1.12  1995/03/08  20:33:52  cdaq
+# (SAW) Add h_scin_eff, h_scin_eff_shutdown, h_cal_eff, and h_cal_eff_shutdown
+#
+# Revision 1.11  1995/02/02  16:37:23  cdaq
+# (SAW) Add -f flag on copy of include files
+#
+# Revision 1.10  1995/01/27  20:49:23  cdaq
+# (SAW) Remove RCS from include file rules
+#
+# Revision 1.9  1994/11/23  15:36:37  cdaq
+# (SAW) Update list of sources
+#
+# Revision 1.8  1994/10/11  18:32:09  cdaq
+# *** empty log message ***
+#
+# Revision 1.7  1994/08/18  04:23:22  cdaq
+# (SAW) Call makereg generated routines to register variables
+#
+# Revision 1.6  1994/08/04  03:50:37  cdaq
+# (SAW) Add rule for .dte files
+#
+# Revision 1.5  1994/07/07  15:17:45  cdaq
+# (SAW) Fix a bug so that all sources not get compiled
+#
+# Revision 1.4  1994/06/14  05:02:00  cdaq
+# (SAW) Add h_init_physics and h_physics_stat
+#
+# Revision 1.3  1994/06/07  18:49:33  cdaq
+# Add register_bypass and register_statistics routines
+#
+# Revision 1.2  1994/05/19  13:55:04  cdaq
+# Add new routines from DFG
+#
+# Revision 1.1  1994/04/15  20:30:16  cdaq
+# Initial revision
+#
+NEWSTYLE = 1
+include ../../etc/Makefile
+include ../../etc/Makefile.flags
+
+osources = h_cal.f h_cer.f h_chamnum.f h_dpsifun.f \
+	h_drift_dist_calc.f h_drift_time_calc.f h_fcnchisq.f \
+	h_find_best_stub.f h_generate_geometry.f h_left_right.f \
+	h_link_stubs.f h_pattern_recognition.f h_physics.f h_print_links.f \
+	h_print_pr.f h_print_stubs.f h_print_tar_tracks.f h_print_tracks.f \
+	h_psifun.f h_register_param.f h_reconstruction.f h_targ_trans.f \
+	h_tof.f h_track.f h_track_fit.f \
+	h_trans_cal.f h_trans_dc.f h_trans_scin.f h_wire_center_calc.f \
+	h_print_decoded_dc.f h_print_raw_dc.f
+newstuff = h_clusters_cal.f h_correct_cal.f \
+	h_fill_dc_dec_hist.f h_fill_dc_fp_hist.f h_init_cal.f \
+	h_init_scin.f h_prt_cal_clusters.f h_prt_cal_decoded.f \
+	h_prt_cal_raw.f h_prt_cal_sparsified.f h_prt_cal_tests.f \
+	h_prt_cal_tracks.f h_prt_dec_scin.f h_prt_raw_scin.f h_prt_tof.f \
+	h_prt_track_tests.f h_raw_dump_all.f h_sparsify_cal.f h_tof_fit.f \
+	h_tof_init.f h_tracks_cal.f h_fill_scin_raw_hist.f
+newerstuff = h_fill_dc_target_hist.f h_targ_trans_init.f \
+	h_init_physics.f h_physics_stat.f \
+	h_strip_scin.f h_choose_single_hit.f h_solve_3by3.f \
+	h_dump_tof.f h_select_best_track.f h_select_best_track_using_scin.f \
+	 h_scin_eff.f h_scin_eff_shutdown.f \
+	h_cal_eff.f h_cal_eff_shutdown.f h_analyze_pedestal.f \
+	h_calc_pedestal.f h_trans_misc.f h_fill_cal_hist.f h_init_histid.f \
+	h_cer_eff.f h_cer_eff_shutdown.f h_init_cer.f h_trans_cer.f \
+	h_dc_eff.f h_dc_eff_shutdown.f h_dump_peds.f h_dump_cal.f \
+	h_report_bad_data.f h_dc_trk_eff.f h_dc_trk_eff_shutdown.f \
+	h_find_easy_space_point.f h_track_tests.f \
+	h_correct_cal_pos.f h_correct_cal_neg.f \
+	h_satcorr.f \
+        h_cal_calib.f h_aero.f h_fill_aero_raw_hist.f hms_sane_track.f\
+        h_sp_multiwire.f h_sp_destroy.f \
+	h_select_best_track_prune.f 
+fppstuff = h_fill_fpp.f  h_fpp_drift.f  h_fpp.f \
+        h_fpp_fit.f  h_fpp_statistics.f  \
+        h_fpp_tracking.f  h_init_fpp.f  \
+        h_trans_fpp.f  h_trans_fpp_hms.f mt19937.f h_fpp_geometry.f
+makeregstuff =	r_hms_filenames.f r_hms_scin_parms.f r_hms_scin_tof.f \
+	r_hms_calorimeter.f r_hms_id_histid.f r_hms_tracking.f \
+	r_hms_geometry.f r_hms_track_histid.f r_hms_recon_elements.f \
+	r_hms_physics_sing.f r_hms_bypass_switches.f r_hms_statistics.f \
+	r_hms_pedestals.f r_hms_cer_parms.f r_hms_aero_parms.f \
+	r_hms_fpp_params.f
+
+
+sources = $(osources) $(newstuff) $(newerstuff) $(fppstuff) $(makeregstuff)
+
+ifeq ($(MYOS),AIX)
+xsources := $(filter-out h_link_stubs.f h_track_tests.f ,$(sources))
+sources = h_link_stubs_aix.f h_track_tests_aix.f $(xsources)
+../h_%_aix.f : ../h_%.f
+	sed -e "s/access=.append./position='append'/"< $< > $@	
+endif
+
+libsources = $(sources)
+
+lib_targets := $(patsubst %.f, libhtracking.a(%.o), $(libsources))
+install-dirs := lib
+bin_targets =
+
+#default:
+#	@echo "nothing to make"
+
+ifdef NFSDIRECTORY
+../%.f : $(NFSDIRECTORY)/HTRACKING/%.f
+	ln -s $< $@
+
+.PRECIOUS: ../%.f
+else
+#
+# Rule for making the register subroutines
+#
+../r_%.f : ../%.cmn $(MAKEREG)
+	(cd .. ; $(MAKEREG) $(<F) -o $(@F) -e /dev/null)
+
+.PRECIOUS: ../r_%.f
+endif
+
+#
+# Get include files from INCLUDE directory
+#
+
+%.cmn ../%.cmn:: ../../INCLUDE/%.cmn
+	$(CP) $< $@
+
+%.dec ../%.dec:: ../../INCLUDE/%.dec
+	$(CP) $< $@
+
+%.par ../%.par:: ../../INCLUDE/%.par
+	$(CP) $< $@
+
+%.dte ../%.dte:: ../../INCLUDE/%.dte
+	$(CP) $< $@
+
+include $(sources:.f=.d)

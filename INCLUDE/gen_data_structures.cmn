@@ -1,0 +1,545 @@
+*****************begin: gen_data_structures.cmn*************************
+*
+*     include file     gen_data_structures.cmn
+*
+*     Author:	D. F. Geesaman		1 September 1993
+*
+* $Log: gen_data_structures.cmn,v $
+* Revision 1.35.20.7.2.6  2009/01/16 18:48:01  cdaq
+* *** empty log message ***
+*
+* Revision 1.35.20.7.2.5  2008/10/31 08:26:25  cdaq
+* *** empty log message ***
+*
+* Revision 1.35.20.7.2.4  2008/10/25 12:41:09  cdaq
+* *** empty log message ***
+*
+* Revision 1.35.20.7.2.3  2008/10/11 15:04:23  cdaq
+* slow raster
+*
+* Revision 1.35.20.7.2.2  2008/10/08 17:38:19  cdaq
+* Added 2nd copy of slow raster info
+*
+* Revision 1.35.20.7.2.1  2008/09/26 21:42:49  cdaq
+* *** empty log message ***
+*
+* Revision 1.35.20.7  2007/10/23 17:02:07  cdaq
+* Added eloss parameters for everything in front of BigCal: 4 inch Al absorber, .5 inch lucite, .75 inches Al (.5 in front plate and .25 in support frame for lucite)
+*
+* Revision 1.35.20.6  2007/10/20 19:52:02  cdaq
+* Added helicity_ADC and helicity_TS variables so we can compare
+*
+* Revision 1.35.20.5  2007/10/19 14:57:57  cdaq
+* *** empty log message ***
+*
+* Revision 1.35.20.4  2007/10/17 16:03:28  cdaq
+* Added beam helicity variable
+*
+* Revision 1.35.20.3  2007/10/17 15:51:27  cdaq
+* Added helicity flag
+*
+* Revision 1.35.20.2  2007/08/07 19:11:34  puckett
+* *** empty log message ***
+*
+* Revision 1.35  2003/09/05 20:08:09  jones
+* Merge in online03 changes (mkj)
+*
+* Revision 1.34.2.1  2003/04/09 02:59:22  cdaq
+* Changed gtarg_type from a scaler to an array: gtarg_type(gtarg_num)
+*
+* Revision 1.34  2003/02/21 14:54:04  jones
+* Added parameter genable_sos_fieldcorr used in ENGINE/s_fieldcorr.f
+* as flag for enabling correction to SOS central momentum
+*
+* Revision 1.33  2002/12/27 21:43:14  jones
+*    add variable geloss to common gen_beam
+*    add gtarg_type to common gen_target
+*    change GMAX_NUM_BPMS=3
+*    change GBPM_KAPPA to array  GBPM_KAPPA(GMAX_NUM_BPMS)
+*
+* Revision 1.32  2002/09/24 20:30:17  jones
+*   a. Add genable_hms_fieldcorr to common/gen_satcorr/
+*   b. Move array definitions from COMMON block to REAL statement
+*
+*
+*
+* Revision 1.31  1999/02/23 19:05:55  csa
+* (JRA) Remove slow raster stuff
+*
+* Revision 1.30  1999/02/10 17:50:04  csa
+* Added target eloss variables (D. Mack, K. Vansyoc, J. Volmer),
+* bpm variables (P. Gueye), and raster variables (J. Reinhold)
+*
+* Revision 1.29  1998/12/01 20:21:02  saw
+* (SAW) Change GNUM_MISC_PLANES from 2 to 3
+*
+* Revision 1.28  96/09/04  15:45:04  15:45:04  saw (Stephen A. Wood)
+* (JRA) Increase # of possible targets.  Add fast raster variables.
+* 
+* Revision 1.27  1996/04/30 13:34:25  saw
+* (JRA) Swap index order in GBPM_ADC_PED, GBPM_RAW_ADC
+*
+* Revision 1.26  1996/01/24 16:18:29  saw
+* (JRA) Change raster to use misc arrays.  Change some variable names
+*       for beam position and target information.
+*
+* Revision 1.25  1995/05/22 18:40:21  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+*
+* Revision 1.24  1995/05/11  15:16:26  cdaq
+* (SAW) Add new singles and coin kinematics.  Add aerogel structure.
+* (JRA) Change ?SDEDXn vars to arrays.
+*
+* Revision 1.23  1995/04/06  20:16:28  cdaq
+* (SAW) Add ddutta's pre cosy rotation stuff.  Add arrays for BPM data
+*
+* Revision 1.22  1995/03/13  18:54:22  cdaq
+* (JRA) ?SCIN_ADC_??? now real, add several element max's for array sizes, add
+*       ?NUM_PMT_HIT, ?SNUM_SCIN_HIT, ?SNUM_PMT_HIT
+*
+* Revision 1.21  1995/01/03  13:59:37  cdaq
+* (HGM) Increase # of HMS shower counter blocks to 52
+*
+* Revision 1.20  1994/11/22  18:37:46  cdaq
+* (SPB) Brought SOS commons up to date
+* (SAW) Cleaned up ?DC_NUM_CHAMBERS and ?MAX_NUM_CHAMBERS stuff
+*
+* Revision 1.19  1994/09/19  20:26:44  cdaq
+* (SAW) Remove HDC_HITS_PER_PLANE from HMS_DECODED_DC common
+*
+* Revision 1.18  1994/09/13  21:47:19  cdaq
+* (JRA) Remove HGOOD_START_PLANE
+*
+* Revision 1.17  1994/09/13  19:15:21  cdaq
+* (JRA) Add chisq, shower c. raw adc, number of chambers, shower c slop
+*
+* Revision 1.16  1994/08/15  13:20:47  cdaq
+* (SAW) CEBEAM and CPBEAM are parm not event
+*
+* Revision 1.15  1994/08/15  04:39:29  cdaq
+* (SAW) Change CTPTYPE to parm for some variables
+*
+* Revision 1.14  1994/08/03  19:57:07  cdaq
+* (SAW) Add "CTPTYPE=event" directive for auto generation of CTP reg calls
+*
+* Revision 1.13  1994/06/26  02:32:07  cdaq
+* (JA&SAW) Add rawer data structure for HMS scintillator hits.
+* Increase  HMS DC max hits to 3600.
+*
+* Revision 1.12  1994/06/22  15:34:35  cdaq
+* (SAW) Increase max # of hits for hodoscopes to allow for non sparsified data
+*
+* Revision 1.11  1994/06/21  19:22:59  cdaq
+* (SAW) Add hit counters to H_RAW_MISC, S_RAW_MISC and G_RAW_UNINST commons
+*
+* Revision 1.10  1994/06/18  02:49:49  cdaq
+* (SAW) Add code for miscleaneous data and uninstrumented channels
+*
+* Revision 1.9  1994/06/14  03:05:42  cdaq
+* (DFG) Add hms_physics, sos_physics, and coin_physics
+*       Add particle mass to hms_spectrometer and sos_spectrometer
+*
+* Revision 1.8  1994/04/14  16:25:43  cdaq
+* (SAW) Fix typo
+*
+* Revision 1.7  1994/04/12  20:42:22  cdaq
+* (SAW) Put column first in shower commons (column == plane)
+*       Add a structure for hits on uninstrumented channels
+*       Correct "FILLED BY" comment
+*
+* Revision 1.6  1994/04/12  18:38:15  cdaq
+* (DFG) Change dimension of HNTRACK_HITS(HNTRACKS_MAX,HNTRACKHITS_MAX+1)
+*                           SNTRACK_HITS(SNTRACKS_MAX,SNTRACKHITS_MAX+1)
+*                           to allow space for number of hits.
+* (SAW) Remove craw common to gen_craw.cmn
+*
+* Revision 1.5  1994/03/24  17:02:03  cdaq
+* DFG change decoded scin to arrington format in both hms and sos
+*     change track tests to amatouni format
+*
+* Revision 1.4  1994/02/21  02:54:22  cdaq
+* DFG Separate dimensioning parameters from actual number
+*     SNUM_DC_PLANES  --> SMAX_NUM_DC_PLANES
+*     HNUM_DC_PLANES  --> HMAX_NUM_DC_PLANES
+*
+* Revision 1.3  1994/02/09  22:26:10  cdaq
+* (DFG) Add beam and spectrometer geometry banks.
+* Separate raw and decoded data for scin and cal
+* Change XCER_COR_ADC to XCER_PLANE
+*
+* Revision 1.2  1994/02/08  21:19:34  cdaq
+* Geesaman's Jan 5 copy adding HMS_TRACK_TESTS and SOS_TRACK_TESTS
+*
+* Revision 1.1  1994/02/07  17:05:43  cdaq
+* Initial revision
+*
+*
+*    BASIC BEAM PARAMETERS
+*    None of these are really coincidence things, and some are constant
+*    while some are event by event. 
+*
+*
+*     CTPTYPE=parm
+*
+      REAL*4  GEBEAM         ! BEAM ENERGY (GEV)
+      REAL*4  GPBEAM         ! BEAM MOMENTUM (GEV/C)
+      REAL*4  G_BEAM_TARGET_S      ! s computed from beam and target info
+*
+*     CTPTYPE=event
+*
+      integer*4 ncalls_calc_ped
+      integer*4 gbeam_helicity ! whatever we decide
+      integer*4 gbeam_helicity_ADC ! value from ADC
+      integer*4 gbeam_helicity_TS ! value from TS
+      REAL*4 GBEAM_X,GBEAM_Y    !final beam position from bpm & raster info
+      REAL*4 GBEAM_XP,GBEAM_YP  !final beam angles from bpm & raster info
+      REAL*4 geloss
+
+      COMMON/GEN_BEAM/
+     &     GEBEAM,
+     &     GPBEAM,
+     &     G_BEAM_TARGET_S,
+     &     ncalls_calc_ped,
+     &     gbeam_helicity,
+     &     gbeam_helicity_ADC,
+     &     gbeam_helicity_TS,
+     &     GBEAM_X,GBEAM_Y,
+     &     GBEAM_XP,GBEAM_YP,
+     &     geloss
+*
+*     CTPTYPE=parm
+*
+*    BASIC TARGET PARAMETERS
+*
+      integer   gmax_targets
+      parameter(gmax_targets=30)
+      integer   gtarg_num       !position in target ladder
+      REAL*4    gtarg_mass(gmax_targets)      !target mass
+      REAL*4    gtarg_z(gmax_targets)         !target Z
+      REAL*4    gtarg_a (gmax_targets)        !target A
+      REAL*4    gtarg_lrad(gmax_targets)      !radiation length in %
+      REAL*4    gtarg_thick(gmax_targets)     !thickness in g/cm^2
+      REAL*4    gtarg_dens(gmax_targets)     !density in g/cm^3
+      REAL*4    gtarg_theta     !angle of target to beam. Note that
+                                 !90 degrees is target normal to beam!
+      integer gtarg_type(gmax_targets)        ! 1=tuna can, 2=beer can, >=21 solid tgt
+      COMMON/GEN_TARGET/
+     &     gtarg_num,
+     &     gtarg_theta,
+     &     gtarg_mass,
+     &     gtarg_z,
+     &     gtarg_a,
+     &     gtarg_lrad,
+     &     gtarg_thick,
+     &     gtarg_dens,
+     &     gtarg_type
+*
+*     Energy loss parameters for the targets. Vansyoc, March 98
+*
+*     CTPTYPE=parm
+*
+
+
+      INTEGER gelossdebug,gen_eloss_enable
+      REAL*4 hscat_win_thk,hscat_win_den,hscat_win_a,hscat_win_z
+      REAL*4 hdet_ent_thk,hdet_ent_den,hdet_ent_a,hdet_ent_z
+      REAL*4 sscat_win_thk,sscat_win_den,sscat_win_a,sscat_win_z
+      REAL*4 sdet_ent_thk,sdet_ent_den,sdet_ent_a,sdet_ent_z
+      REAL*4 gcell_radius,gz_cell,ga_cell,gcell_den,gwall_thk,gend_thk
+      REAL*4 gfront_thk,gair_dens,gair_thk,gair_a,gair_z
+      real*4 bscat_win_thk,bscat_win_den,bscat_win_a,bscat_win_z
+      real*4 babs_thk,babs_den,babs_a,babs_z
+      real*4 bluc_thk,bluc_den,bluc_a,bluc_z
+      real*4 bfpl_thk,bfpl_den,bfpl_a,bfpl_z
+
+      COMMON/TARG_LOSS/
+     &     gelossdebug,gen_eloss_enable,
+     &     hscat_win_thk,hscat_win_den,hscat_win_a,hscat_win_z,
+     &     hdet_ent_thk,hdet_ent_den,hdet_ent_a,hdet_ent_z,
+     &     sscat_win_thk,sscat_win_den,sscat_win_a,sscat_win_z,
+     &     sdet_ent_thk,sdet_ent_den,sdet_ent_a,sdet_ent_z,
+     &     gcell_radius,gz_cell,ga_cell,gcell_den,gwall_thk,gend_thk,
+     &     gfront_thk,gair_dens,gair_thk,gair_a,gair_z,
+     &     bscat_win_thk,bscat_win_den,bscat_win_a,bscat_win_z,
+     &     babs_thk,babs_den,babs_a,babs_z,
+     &     bluc_thk,bluc_den,bluc_a,bluc_z,
+     &     bfpl_thk,bfpl_den,bfpl_a,bfpl_z
+
+*
+*     CTPTYPE=event
+*
+*
+*     Hits from Uninstrumented fastbus channels
+*     filled by G_decode_event_by_banks
+*
+      INTEGER GMAX_UNINST_HITS
+      PARAMETER(GMAX_UNINST_HITS=1000)
+      INTEGER*4 GUNINST_TOT_HITS
+      INTEGER*4 GUNINST_RAW_ROCSLOT(GMAX_UNINST_HITS)     ! ROC*2**16 + SLOT
+      INTEGER*4 GUNINST_RAW_SUBADD(GMAX_UNINST_HITS)      ! Fastbus channel
+      INTEGER*4 GUNINST_RAW_DATAWORD(GMAX_UNINST_HITS)    ! Full fastbus dataword
+      COMMON/G_RAW_UNINST/
+     &     GUNINST_RAW_ROCSLOT,
+     &     GUNINST_RAW_SUBADD,
+     &     GUNINST_RAW_DATAWORD,
+     &     GUNINST_TOT_HITS
+*
+*
+*     Decoded data from ADC's encoding beam position.
+*     The raw data comes from the 'hmisc' detector.
+*
+*
+*     CTPTYPE=event
+*
+
+      INTEGER*4 GMAX_NUM_BPMS
+      PARAMETER(GMAX_NUM_BPMS=3)      
+      INTEGER*4 GNUM_BPM_SIGNALS
+      PARAMETER(GNUM_BPM_SIGNALS=4)   !1=X+,2=X-,3=Y+,4=Y-
+
+      REAL*4 GBPM_ADC_PED(GNUM_BPM_SIGNALS,GMAX_NUM_BPMS)
+      REAL*4 GBPM_RAW_ADC(GNUM_BPM_SIGNALS,GMAX_NUM_BPMS)
+      REAL*4 GBPM_ADC(GNUM_BPM_SIGNALS,GMAX_NUM_BPMS)
+      REAL*4 GBPM_XPRIME(GMAX_NUM_BPMS)
+      REAL*4 GBPM_YPRIME(GMAX_NUM_BPMS)
+      REAL*4 GBPM_X(GMAX_NUM_BPMS)
+      REAL*4 GBPM_Y(GMAX_NUM_BPMS)
+      REAL*4 GBPM_MEANX(GMAX_NUM_BPMS)
+      REAL*4 GBPM_MEANY(GMAX_NUM_BPMS)
+      REAL*4 GBPM_BEAM_X,GBPM_BEAM_XP
+      REAL*4 GBPM_BEAM_Y,GBPM_BEAM_YP
+*
+*     CTPTYPE=parm
+*
+      real*4 GBPM_KAPPA(GMAX_NUM_BPMS)
+      real*4 GBPM_ALPHA_X(GMAX_NUM_BPMS),GBPM_ALPHA_Y(GMAX_NUM_BPMS)
+      real*4 GBPM_X_OFF(GMAX_NUM_BPMS),GBPM_Y_OFF(GMAX_NUM_BPMS)
+      real*4 GBPM_XP_PED(GMAX_NUM_BPMS),GBPM_XM_PED(GMAX_NUM_BPMS)
+      real*4 GBPM_YP_PED(GMAX_NUM_BPMS),GBPM_YM_PED(GMAX_NUM_BPMS)
+      real*4 GBPM_ZPOS(GMAX_NUM_BPMS)
+      integer*4 GBPM_SAMPLE,GBPM_SAMPLE_MAX
+      integer*4 GUSE_BPM_IN_RECON
+      integer*4 GUSE_BPMC
+      parameter(GBPM_SAMPLE_MAX=5000)
+
+      COMMON/COIN_DEC_BPM/
+     &     GBPM_ADC_PED,
+     &     GBPM_RAW_ADC,
+     &     GBPM_ADC,
+     &     GBPM_XPRIME,
+     &     GBPM_YPRIME,
+     &     GBPM_X,
+     &     GBPM_Y,
+     &     GBPM_MEANX,
+     &     GBPM_MEANY,
+     &     GBPM_BEAM_X,
+     &     GBPM_BEAM_XP,
+     &     GBPM_BEAM_Y,
+     &     GBPM_BEAM_YP,
+     &     GBPM_KAPPA,
+     &     GBPM_ALPHA_X,GBPM_ALPHA_Y,
+     &     GBPM_X_OFF,GBPM_Y_OFF,
+     &     GBPM_XP_PED,GBPM_XM_PED,GBPM_YP_PED,GBPM_YM_PED,
+     &     GBPM_ZPOS,
+     &     GBPM_SAMPLE,
+     &     GUSE_BPM_IN_RECON,
+     &     GUSE_BPMC
+
+*     Decoded data from ADC's encoding fast/slow raster position (FR/SR).
+*     The raw data comes from the 'hmisc' detector.
+*     The CBEAM variables are final beam positions from raster and bpm signals.
+
+*     CTPTYPE=event
+
+      REAL*4 GFRX_ADC_PED,GFRY_ADC_PED
+      REAL*4 GFRX_RAW_ADC,GFRY_RAW_ADC
+      REAL*4 GFRX_ADC,GFRY_ADC
+      REAL*4 GFRX_SYNC,GFRY_SYNC
+      REAL*4 GFRX_SYNC_MEAN,GFRY_SYNC_MEAN
+      REAL*4 GFRX,GFRY
+      REAL*4 GFRXP,GFRYP
+*     SLOW Raster PART as read by HMS
+      REAL*4 GSRX_ADC_PED,GSRY_ADC_PED
+      REAL*4 GSRX_RAW_ADC,GSRY_RAW_ADC
+      REAL*4 GSRX_SYNC,GSRY_SYNC
+*     SLOW Raster PART as read by BETA
+      REAL*4 GSRX_ADC_PED2,GSRY_ADC_PED2
+      REAL*4 GSRX_RAW_ADC2,GSRY_RAW_ADC2
+      REAL*4 GSRX_SYNC2,GSRY_SYNC2
+      REAL*4 GSRX_ADC,GSRY_ADC
+      REAL*4 GSRX_CALIB,GSRY_CALIB
+      REAL*4 GSR_beamx,GSR_beamy
+
+*
+*     CTPTYPE=parm
+*
+      INTEGER*4 GUSEFR,GUSE_FRDEFAULT
+      REAL*4    GFR_CAL_MOM
+      REAL*4    GFRX_ADCPERCM,GFRY_ADCPERCM
+      REAL*4    GFRX_ADCMAX,GFRX_MAXSIZE 
+      REAL*4    GFRY_ADCMAX,GFRY_MAXSIZE 
+      REAL*4    GFRX_DPHASE,GFRX_SYNCCUT
+      REAL*4    GFRY_DPHASE,GFRY_SYNCCUT
+      REAL*4    GFRX_DIST,GFRY_DIST
+
+      REAL*4    GBEAM_XOFF,GBEAM_XPOFF
+      REAL*4    GBEAM_YOFF,GBEAM_YPOFF
+      REAL*4    GSPEC_XOFF,GSPEC_XPOFF
+      REAL*4    GSPEC_YOFF,GSPEC_YPOFF
+
+      COMMON/COIN_DEC_RASTER/
+     &     GFRX_ADC_PED,GFRY_ADC_PED,
+     &     GFRX_RAW_ADC,GFRY_RAW_ADC,
+     &     GFRX_ADC,GFRY_ADC,
+     &     GFRX,GFRY,
+     &     GFRX_SYNC,GFRY_SYNC,
+     &     GFRX_SYNC_MEAN,GFRY_SYNC_MEAN,
+     &     GFRXP,GFRYP,
+     &     GUSEFR,GUSE_FRDEFAULT,
+     &     GFR_CAL_MOM,
+     &     GFRX_ADCPERCM,GFRY_ADCPERCM,
+     &     GFRX_ADCMAX,GFRX_MAXSIZE, 
+     &     GFRY_ADCMAX,GFRY_MAXSIZE,
+     &     GFRX_DPHASE,GFRX_SYNCCUT,
+     &     GFRY_DPHASE,GFRY_SYNCCUT,
+     &     GFRX_DIST,GFRY_DIST,
+     &     GBEAM_XOFF,GBEAM_XPOFF,
+     &     GBEAM_YOFF,GBEAM_YPOFF,
+     &     GSPEC_XOFF,GSPEC_XPOFF,
+     &     GSPEC_YOFF,GSPEC_YPOFF,
+     &     GSRX_RAW_ADC,GSRY_RAW_ADC,  ! SLOW raster part
+     &     GSRX_SYNC,GSRY_SYNC,
+     &     GSRX_RAW_ADC2,GSRY_RAW_ADC2, ! SLOW raster 2
+     &     GSRX_SYNC2,GSRY_SYNC2,
+     &     GSRX_ADC_PED,GSRY_ADC_PED,
+     &     GSRX_ADC_PED2,GSRY_ADC_PED2,
+     &     GSRX_ADC,GSRY_ADC,
+     &     GSRX_CALIB,GSRY_CALIB,
+     &     GSR_BEAMX,GSR_BEAMY
+*
+*
+*     TRIGGER TIMING
+*
+*
+      real*4 T_trgHMS, T_trgBIG, T_trgPI0, T_trgBETA, T_trgCOIN1,T_trgCOIN2
+      COMMON /TRIGGERTIME/T_trgHMS, T_trgBIG, T_trgPI0, T_trgBETA, T_trgCOIN1,T_trgCOIN2
+*
+*
+*
+*
+*                  !   B E A M   P O S I T I O N   --   S E M
+*
+*     CTPTYPE=parm
+      integer slow_raster_correction                             ! STATUS of correction
+      real*4 n_sr_size
+      real*4 n_sr_slopex
+      real*4 n_sr_offsetx
+      real*4 n_sr_slopey
+      real*4 n_sr_offsety
+      real*4 n_sr_adcy_zero
+      real*4 n_sr_adcx_zero
+
+      common /n_raster_calib/
+     &     slow_raster_correction,n_sr_size,
+     &     n_sr_slopex, 
+     &     n_sr_offsetx,
+     &     n_sr_slopey, 
+     &     n_sr_offsety,n_sr_adcy_zero,n_sr_adcx_zero
+
+      real*4 n_fr_size
+      real*4 n_fr_slopex
+      real*4 n_fr_offsetx
+      real*4 n_fr_slopey
+      real*4 n_fr_offsety
+      real*4 n_fr_adcy_zero
+      real*4 n_fr_adcx_zero
+      common /n_fraster_calib/
+     &     n_fr_size,
+     &     n_fr_slopex, 
+     &     n_fr_offsetx,
+     &     n_fr_slopey, 
+     &     n_fr_offsety,n_fr_adcy_zero,n_fr_adcx_zero
+
+
+
+*
+*     Misc. signals read out for hms AND sos events. Mostly
+*     beamline information: BPMs, BLMs, Fast Raster, slow raster, ...
+*
+*
+*     CTPTYPE=parm
+*
+      INTEGER GMAX_MISC_HITS
+      PARAMETER(GMAX_MISC_HITS=100)
+      INTEGER*4 GNUM_MISC_PLANES
+      PARAMETER(GNUM_MISC_PLANES=3)
+*
+*     CTPTYPE=event
+*
+      INTEGER*4 GMISC_TOT_HITS
+      INTEGER*4 GMISC_RAW_ADDR1(GMAX_MISC_HITS)    ! "Plane"   (1=TDC,2=ADC)
+      INTEGER*4 GMISC_RAW_ADDR2(GMAX_MISC_HITS)    ! "Counter"
+      INTEGER*4 GMISC_RAW_DATA(GMAX_MISC_HITS)
+      INTEGER*4 GMISC_DEC_DATA(GMAX_MISC_HITS,GNUM_MISC_PLANES)
+
+      COMMON/G_RAW_MISC/
+     &     GMISC_TOT_HITS,
+     &     GMISC_RAW_ADDR1,
+     &     GMISC_RAW_ADDR2,
+     &     GMISC_RAW_DATA,
+     &     GMISC_DEC_DATA
+*
+*
+* MISC. PEDESTALS
+*
+*
+*     CTPTYPE=event
+*
+      integer*4 gmisc_ped_sum2(gmax_misc_hits,gnum_misc_planes)
+      integer*4 gmisc_ped_sum(gmax_misc_hits,gnum_misc_planes)
+      integer*4 gmisc_ped_num(gmax_misc_hits,gnum_misc_planes)
+      integer*4 gmisc_num_ped_changes
+      integer*4 gmisc_changed_tube(gmax_misc_hits)
+      real*4 gmisc_ped_change(gmax_misc_hits)
+      real*4 gmisc_ped(gmax_misc_hits,gnum_misc_planes)
+      real*4 gmisc_ped_rms(gmax_misc_hits,gnum_misc_planes)
+      real*4 gmisc_new_ped(gmax_misc_hits,gnum_misc_planes)
+      real*4 gmisc_new_rms(gmax_misc_hits,gnum_misc_planes)
+      real*4 gmisc_new_adc_threshold(gmax_misc_hits,gnum_misc_planes)
+      real*4 gmisc_dum_adc_threshold(gmax_misc_hits,gnum_misc_planes)
+*
+*     CTPTYPE=parm
+*
+      integer*4 gmisc_min_peds
+*
+      common/gen_misc_pedestals/
+     &   gmisc_ped,
+     &   gmisc_ped_sum2,       !sum of squares
+     &   gmisc_ped_sum,        !sum of peds
+     &   gmisc_ped_num,        !number of peds
+     &   gmisc_min_peds,       !# of peds required to override default pedestal
+     &   gmisc_ped_rms,
+     &   gmisc_new_ped,
+     &   gmisc_new_rms,
+     &   gmisc_num_ped_changes,!# of peds with 2 sigma changes from param file
+     &   gmisc_changed_tube,   !list of changed tubes
+     &   gmisc_ped_change,     !change in pedestal
+     &   gmisc_new_adc_threshold,
+     &   gmisc_dum_adc_threshold
+*
+*     CTPTYPE=parm
+*
+      integer*4 genable_hms_satcorr,genable_sos_satcorr
+      integer*4 genable_hms_fieldcorr,genable_sos_fieldcorr
+*
+      common/gen_satcorr/
+     &   genable_hms_satcorr,genable_sos_satcorr,
+     &   genable_hms_fieldcorr,genable_sos_fieldcorr
+*
+*                                          
+*******************end: gen_data_structures.cmn*************************
+*     Local Variables:
+*     mode: fortran
+*     fortran-continuation-string: "&"
+*     comment-column: 35
+*     End:

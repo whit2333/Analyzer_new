@@ -1,0 +1,79 @@
+*     
+*     CTPTYPE=parm
+*     
+
+      integer*4 gepid_gep_trigtype
+      integer*4 gepid_gep_evtype
+      integer*4 gepid_gep_trigtype_vs_evtype
+      integer*4 gepid_gep_ntrigs
+      integer*4 gepid_gep_HMS1_rawtdc
+      integer*4 gepid_gep_HMS2_rawtdc
+      integer*4 gepid_gep_bigcal_rawtdc
+      integer*4 gepid_gep_coin1_times
+      integer*4 gepid_gep_coin2_times
+      integer*4 gepid_gep_ntrig_h1
+      integer*4 gepid_gep_ntrig_h2
+      integer*4 gepid_gep_ntrig_bigcal
+      integer*4 gepid_hgep_delta(2)
+      integer*4 gepid_hgep_q2_hms(2)
+      integer*4 gepid_hgep_q2_cal(2)
+      integer*4 gepid_hgep_q2(2)
+      integer*4 gepid_hgep_ecal(2)
+      integer*4 gepid_hgep_pp(2)
+      integer*4 gepid_hgep_epsilon(2)
+      integer*4 gepid_hgep_etheta(2)
+      integer*4 gepid_hgep_ephi(2)
+      integer*4 gepid_hgep_ptheta(2)
+      integer*4 gepid_hgep_pphi(2)
+      integer*4 gepid_hgep_emiss(2)
+      integer*4 gepid_hgep_pmissx(2)
+      integer*4 gepid_hgep_pmissy(2)
+      integer*4 gepid_hgep_pmissz(2)
+      integer*4 gepid_hgep_xdiff(2)
+      integer*4 gepid_hgep_ydiff(2)
+      integer*4 gepid_hgep_xydiff(2)
+      integer*4 gepid_hgep_ediff(2)
+      integer*4 gepid_hgep_dpel(2)
+      integer*4 gepid_slowrastx
+      integer*4 gepid_slowrasty
+      integer*4 gepid_slowrastxy
+      integer*4 gepid_slowrastxy2
+
+      common/gep_hist_id/
+     $     gepid_gep_trigtype,
+     $     gepid_gep_evtype,
+     $     gepid_gep_trigtype_vs_evtype,
+     $     gepid_gep_ntrigs,
+     $     gepid_gep_HMS1_rawtdc,
+     $     gepid_gep_HMS2_rawtdc,
+     $     gepid_gep_bigcal_rawtdc,
+     $     gepid_gep_coin1_times,
+     $     gepid_gep_coin2_times,
+     $     gepid_gep_ntrig_h1,
+     $     gepid_gep_ntrig_h2,
+     $     gepid_gep_ntrig_bigcal,
+     $     gepid_hgep_delta,
+     $     gepid_hgep_q2_hms,
+     $     gepid_hgep_q2_cal,
+     $     gepid_hgep_q2,
+     $     gepid_hgep_ecal,
+     $     gepid_hgep_pp,
+     $     gepid_hgep_epsilon,
+     $     gepid_hgep_etheta,
+     $     gepid_hgep_ephi,
+     $     gepid_hgep_ptheta,
+     $     gepid_hgep_pphi,
+     $     gepid_hgep_emiss,
+     $     gepid_hgep_pmissx,
+     $     gepid_hgep_pmissy,
+     $     gepid_hgep_pmissz,
+     $     gepid_hgep_xdiff,
+     $     gepid_hgep_ydiff,
+     $     gepid_hgep_xydiff,
+     $     gepid_hgep_ediff,
+     $     gepid_hgep_dpel,
+     >     gepid_slowrastx,
+     >     gepid_slowrasty,
+     >     gepid_slowrastxy,
+     >     gepid_slowrastxy2
+

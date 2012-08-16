@@ -1,0 +1,12 @@
+/.cvsignore/1.1.2.1/Fri Apr  3 15:33:18 2009//Tsane
+/Makefile/1.1.2.1/Sat Oct 25 12:49:15 2008//Tsane
+/Makefile.Unix/1.1.2.1/Sat Oct 25 12:49:15 2008//Tsane
+/sem_analyze_pedestal.f/1.1.2.1/Sat Oct 25 12:49:15 2008//Tsane
+/sem_calc_pedestal.f/1.1.2.1/Sat Oct 25 12:49:15 2008//Tsane
+/sem_calc_sr_beampos.f/1.1.2.4/Fri Jun  5 18:08:02 2009//Tsane
+/sem_clear_event.f/1.1.2.1/Sat Oct 25 12:49:16 2008//Tsane
+/sem_decode.f/1.1.2.2/Fri Jan 16 18:48:01 2009//Tsane
+/sem_fill_tbpm.f/1.1.2.3/Wed Feb 11 21:42:32 2009//Tsane
+/sem_register_variables.f/1.1.2.1/Sat Oct 25 12:49:16 2008//Tsane
+/sem_reset_event.f/1.1.2.1/Sat Oct 25 12:49:16 2008//Tsane
+D

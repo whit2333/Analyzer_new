@@ -1,0 +1,50 @@
+*      sos_recon_elements.cmn
+******************** Cosy reconstruction matrix elements. **********************
+*                          Short Orbit Spectrometer                            *
+*                         Version 1.0,   18-Nov-1993                           *
+*                   David Potterveld, Argonne National Lab.                    *
+*   Modified:    21-JAN-94   DFG    change max_ to smax_
+* $Log: sos_recon_elements.cmn,v $
+* Revision 1.5  1996/09/04 16:31:01  saw
+* (JRA) Add 5th element to s_recon_expon
+*
+* Revision 1.4  1995/08/08 15:42:30  cdaq
+* (DD) Add detector and angular offsets
+*
+* Revision 1.3  1995/04/06  20:30:40  cdaq
+* (SAW) Add ddutta's pre cosy transformation stuff
+*
+* Revision 1.2  1994/08/05  20:43:13  cdaq
+* (SAW) Add "CTPTYPE=parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.1  1994/02/22  14:47:47  cdaq
+* Initial revision
+*
+********************************************************************************
+*     CTPTYPE=parm
+*
+      integer*4        smax_recon_elements
+      parameter       (smax_recon_elements = 1000) !Max # coeff elements
+
+      real*4           s_recon_coeff(4,smax_recon_elements)
+      real*4           s_ang_slope_x,s_ang_slope_y
+      real*4           s_ang_offset_x,s_ang_offset_y
+      real*4           s_det_offset_x,s_det_offset_y
+      real*4           s_z_true_focus ! Z position of SOS focus
+      integer*4        s_recon_expon(5,smax_recon_elements)
+      integer*4        s_num_recon_terms
+      integer*4        s_recon_initted
+
+      common /sos_recon_elements/
+     >     s_recon_initted,             !Initialization flag.
+     >     s_num_recon_terms,           !Number of terms.
+     >     s_recon_coeff,               !Coefficients.
+     >     s_recon_expon,               !Exponents.
+     >     s_ang_slope_x, s_ang_slope_y,   ! Slopes for rotation of f plane
+     >     s_ang_offset_x, s_ang_offset_y, ! Slopes for rotation of f plane
+     >     s_det_offset_x,s_det_offset_y,  ! Detector offsets
+     >     s_z_true_focus               ! Z position of SOS focus
+
+********************************************************************************
+
+

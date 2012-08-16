@@ -1,0 +1,731 @@
+****************************************************
+* 
+*     include file       bigcal_data_structures.cmn
+*
+*     Author: Andrew Puckett          8 January 2007
+*
+*     Change Log:
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+* start with constants/array dimensions:
+* we will treat BigCal ADCs/TDCs as separate detectors. 
+* we will also treat the sections of BigCal (RCS, Protvino) separately
+*
+*
+*     CTPTYPE=parm
+*
+* Protvino half ADCs
+      integer*4 BIGCAL_PROT_MAXHITS
+      parameter (BIGCAL_PROT_MAXHITS=1024)
+      integer*4 BIGCAL_PROT_NX
+      parameter (BIGCAL_PROT_NX=32)
+      integer*4 BIGCAL_PROT_NY
+      parameter (BIGCAL_PROT_NY=32)
+     
+* RCS half ADCs
+      
+      integer*4 BIGCAL_RCS_MAXHITS
+      parameter (BIGCAL_RCS_MAXHITS=720)
+      integer*4 BIGCAL_RCS_NX
+      parameter (BIGCAL_RCS_NX=30)
+      integer*4 BIGCAL_RCS_NY
+      parameter (BIGCAL_RCS_NY=24)
+*     array dimensions for combined hit and detector arrays:
+      integer*4 BIGCAL_ALL_MAXHITS
+      parameter(BIGCAL_ALL_MAXHITS=1744)
+
+*     cluster array dimensions
+c$$$      integer*4 BIGCAL_PROT_NCLSTR_MAX
+c$$$      parameter(BIGCAL_PROT_NCLSTR_MAX=10)
+c$$$      integer*4 BIGCAL_RCS_NCLSTR_MAX
+c$$$      parameter(BIGCAL_RCS_NCLSTR_MAX=10)
+c$$$      integer*4 BIGCAL_MID_NCLSTR_MAX
+c$$$      parameter(BIGCAL_MID_NCLSTR_MAX=5)
+      integer*4 BIGCAL_ALL_NCLSTR_MAX
+      parameter(BIGCAL_ALL_NCLSTR_MAX=25) ! must equal sum of prot, rcs, and mid or problems will happen
+
+c     make these parameters instead (see bigcal_clstr_cuts common block) 
+c     except that we don't want clstr_ncell_max changed because the 
+c     structure of the ntuple depends on it.
+      integer*4 BIGCAL_CLSTR_NCELL_MAX
+      parameter(BIGCAL_CLSTR_NCELL_MAX=25)
+c$$$
+c$$$      integer*4 BIGCAL_CLSTR_NCELLX_MAX
+c$$$      parameter(BIGCAL_CLSTR_NCELLX_MAX=8)
+c$$$      integer*4 BIGCAL_CLSTR_NCELLY_MAX
+c$$$      parameter(BIGCAL_CLSTR_NCELLY_MAX=8)
+
+c$$$      integer*4 BIGCAL_CLSTR_NCELL_MIN
+c$$$      parameter(BIGCAL_CLSTR_NCELL_MIN=2)
+*     tdc and trigger array dimensions
+      integer*4 BIGCAL_MAX_TDC
+      parameter (BIGCAL_MAX_TDC=224) 
+      integer*4 BIGCAL_MAX_ROWS
+      parameter (BIGCAL_MAX_ROWS=56)
+      integer*4 BIGCAL_MAX_GROUPS
+      parameter (BIGCAL_MAX_GROUPS=4)
+      integer*4 BIGCAL_ATRIG_MAXHITS 
+      parameter (BIGCAL_ATRIG_MAXHITS=38) 
+      integer*4 BIGCAL_TDC_MAXHITS 
+      parameter (BIGCAL_TDC_MAXHITS=1792) ! 224 x 8
+      integer*4 BIGCAL_TTRIG_MAXHITS
+      parameter (BIGCAL_TTRIG_MAXHITS=336) ! 42 x 8
+      integer*4 BIGCAL_TTRIG_MAXGROUPS
+      parameter (BIGCAL_TTRIG_MAXGROUPS=42)
+*     track array dimensions
+      integer*4 BIGCAL_MAX_NTRACK
+      parameter(BIGCAL_MAX_NTRACK=25)
+
+
+      real*4 BIGCAL_THETA_DEG ! BigCal angle in deg.
+      real*4 BIGCAL_THETA_RAD ! BigCal angle in radians
+      real*4 BIGCAL_SINTHETA ! sin of bigcal angle
+      real*4 BIGCAL_COSTHETA ! cos of bigcal angle
+      real*4 BIGCAL_R_TGT ! distance from target in cm
+      real*4 BIGCAL_HEIGHT ! height relative to pivot height = 0
+*     yaw, pitch, and roll angles: only nonzero if a survey was done in place--these angles are used to correct the measured cluster position
+      real*4 BIGCAL_YAW_DEG ! rotation angle viewed from above
+      real*4 BIGCAL_PITCH_DEG ! rotation angle viewed from beam right
+      real*4 BIGCAL_ROLL_DEG ! rotation angle viewed from upstream
+      real*4 BIGCAL_ROT_MATRIX(3,3) ! 3D rotation matrix from "real" to "ideal" BigCal coordinates
+      common/BIGCAL_KIN_SETTINGS/
+     $     BIGCAL_THETA_DEG,
+     $     BIGCAL_THETA_RAD,
+     $     BIGCAL_SINTHETA,
+     $     BIGCAL_COSTHETA,
+     $     BIGCAL_R_TGT,
+     $     BIGCAL_HEIGHT,
+     $     BIGCAL_YAW_DEG,
+     $     BIGCAL_PITCH_DEG,
+     $     BIGCAL_ROLL_DEG,
+     $     BIGCAL_ROT_MATRIX
+
+      
+* ALL TDCs:
+* 4 * 32 = 128 Prot. groups + 4 * 24 = 96 RCS groups = 224 + 38 trigger logic groups = 262 + master trigger signal = 263 TDC signals. All TDCs are in slots in the FB crate shared with the RCS ADCs
+* for now, we will only accommodate running with one trigger type for the 
+* calorimeter. 
+ 
+*
+*     CTPTYPE=event
+*      
+*     the BigCal raw TDC signals:
+
+      logical bigcal_annoying_pulser_event
+      common/b_annoying_pulser/
+     $     bigcal_annoying_pulser_event
+ 
+      integer*4 BIGCAL_TDC_RAW_IROW(BIGCAL_TDC_MAXHITS)
+      integer*4 BIGCAL_TDC_RAW_IGROUP(BIGCAL_TDC_MAXHITS)
+      integer*4 BIGCAL_TDC_RAW(BIGCAL_TDC_MAXHITS)
+      integer*4 BIGCAL_TDC_NHIT
+      common/BIGCAL_RAW_TDC/
+     $     BIGCAL_TDC_NHIT,
+     $     BIGCAL_TDC_RAW_IGROUP,
+     $     BIGCAL_TDC_RAW_IROW,
+     $     BIGCAL_TDC_RAW
+
+*     decoded quantities for calorimeter TDCs:
+*     (filled by b_trans_tdc)
+
+      integer*4 BIGCAL_TDC_NDECODED
+      integer*4 BIGCAL_TDC_IROW(BIGCAL_TDC_MAXHITS) 
+      integer*4 BIGCAL_TDC_IGROUP(BIGCAL_TDC_MAXHITS) 
+      integer*4 BIGCAL_TDC(BIGCAL_TDC_MAXHITS)      
+      integer*4 BIGCAL_TIME_NGOOD
+      integer*4 BIGCAL_TIME_IROW(BIGCAL_TDC_MAXHITS)
+      integer*4 BIGCAL_TIME_IGROUP(BIGCAL_TDC_MAXHITS)
+      integer*4 BIGCAL_TDC_GOOD(BIGCAL_TDC_MAXHITS)
+      real*4 BIGCAL_HIT_TIME(BIGCAL_TDC_MAXHITS)
+      common/BIGCAL_GOOD_TDC/
+     $     BIGCAL_TDC_NDECODED,
+     $     BIGCAL_TDC_IROW,
+     $     BIGCAL_TDC_IGROUP,
+     $     BIGCAL_TDC,
+     $     BIGCAL_TIME_NGOOD,
+     $     BIGCAL_TIME_IROW,
+     $     BIGCAL_TIME_IGROUP,
+     $     BIGCAL_TDC_GOOD,
+     $     BIGCAL_HIT_TIME
+*     the BigCal raw trigger signals (ADC):
+      integer*4 BIGCAL_ATRIG_NHIT
+      integer*4 BIGCAL_ATRIG_IGROUP(BIGCAL_ATRIG_MAXHITS)
+      integer*4 BIGCAL_ATRIG_IHALF(BIGCAL_ATRIG_MAXHITS)
+      integer*4 BIGCAL_ATRIG_ADC_RAW(BIGCAL_ATRIG_MAXHITS)
+      common/BIGCAL_RAW_ATRIG/
+     $     BIGCAL_ATRIG_NHIT,
+     $     BIGCAL_ATRIG_IGROUP,
+     $     BIGCAL_ATRIG_IHALF,
+     $     BIGCAL_ATRIG_ADC_RAW
+*     the BigCal raw trigger signals (TDC): (better to separate TADC and TTDC because the TDCs are multihit)
+      integer*4 BIGCAL_TTRIG_NHIT
+      integer*4 BIGCAL_TTRIG_IGROUP(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_IHALF(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_TDC_RAW(BIGCAL_TTRIG_MAXHITS)
+      common/BIGCAL_RAW_TTRIG/
+     $     BIGCAL_TTRIG_NHIT,
+     $     BIGCAL_TTRIG_IGROUP,
+     $     BIGCAL_TTRIG_IHALF,
+     $     BIGCAL_TTRIG_TDC_RAW
+
+*     decoded and "good" trigger signals (ADC)
+      integer*4 BIGCAL_ATRIG_NGOOD
+      integer*4 BIGCAL_ATRIG_GOOD_IGROUP(BIGCAL_ATRIG_MAXHITS)
+      integer*4 BIGCAL_ATRIG_GOOD_IHALF(BIGCAL_ATRIG_MAXHITS)
+      real*4 BIGCAL_ATRIG_ADC_DEC(BIGCAL_ATRIG_MAXHITS)
+      real*4 BIGCAL_ATRIG_ADC_GOOD(BIGCAL_ATRIG_MAXHITS)
+      real*4 BIGCAL_ATRIG_ESUM(BIGCAL_ATRIG_MAXHITS)
+      common/BIGCAL_DECODED_ATRIG/
+     $     BIGCAL_ATRIG_NGOOD,
+     $     BIGCAL_ATRIG_GOOD_IGROUP,
+     $     BIGCAL_ATRIG_GOOD_IHALF,
+     $     BIGCAL_ATRIG_ADC_DEC,
+     $     BIGCAL_ATRIG_ADC_GOOD,
+     $     BIGCAL_ATRIG_ESUM
+
+*     decoded and "good" trigger signals (TDC)
+
+      integer*4 BIGCAL_TTRIG_NDECODED
+      integer*4 BIGCAL_TTRIG_NGOOD
+      integer*4 BIGCAL_TTRIG_DEC_IGROUP(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_DEC_IHALF(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_GOOD_IGROUP(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_GOOD_IHALF(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_TDC_DEC(BIGCAL_TTRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_TDC_GOOD(BIGCAL_TTRIG_MAXHITS)
+      real*4 BIGCAL_TTRIG_TIME_GOOD(BIGCAL_TTRIG_MAXHITS)
+      common/BIGCAL_DECODED_TTRIG/
+     $     BIGCAL_TTRIG_NDECODED,
+     $     BIGCAL_TTRIG_NGOOD,
+     $     BIGCAL_TTRIG_DEC_IGROUP,
+     $     BIGCAL_TTRIG_DEC_IHALF,
+     $     BIGCAL_TTRIG_GOOD_IGROUP,
+     $     BIGCAL_TTRIG_GOOD_IHALF,
+     $     BIGCAL_TTRIG_TDC_DEC,
+     $     BIGCAL_TTRIG_TDC_GOOD,
+     $     BIGCAL_TTRIG_TIME_GOOD
+
+* The hit arrays (ADCs): 
+*Protvino:
+      integer*4 BIGCAL_PROT_NHIT
+      integer*4 BIGCAL_PROT_IY(BIGCAL_PROT_MAXHITS) 
+      integer*4 BIGCAL_PROT_IX(BIGCAL_PROT_MAXHITS) 
+      integer*4 BIGCAL_PROT_ADC_RAW(BIGCAL_PROT_MAXHITS) 
+
+*RCS:
+      integer*4 BIGCAL_RCS_NHIT 
+      integer*4 BIGCAL_RCS_IY(BIGCAL_RCS_MAXHITS) 
+      integer*4 BIGCAL_RCS_IX(BIGCAL_RCS_MAXHITS) 
+      integer*4 BIGCAL_RCS_ADC_RAW(BIGCAL_RCS_MAXHITS) 
+
+      common/BIGCAL_RAW_ADC/
+     $     BIGCAL_PROT_NHIT,
+     $     BIGCAL_PROT_IX,
+     $     BIGCAL_PROT_IY,
+     $     BIGCAL_PROT_ADC_RAW,
+     $     BIGCAL_RCS_NHIT,
+     $     BIGCAL_RCS_IX,
+     $     BIGCAL_RCS_IY,
+     $     BIGCAL_RCS_ADC_RAW
+
+* The bad hit arrays (regular and trigger ADCs):
+      integer*4 BIGCAL_PROT_NHIT_CH(BIGCAL_PROT_MAXHITS)
+      integer*4 BIGCAL_RCS_NHIT_CH(BIGCAL_RCS_MAXHITS)
+      integer*4 BIGCAL_ATRIG_NHIT_CH(BIGCAL_ATRIG_MAXHITS)
+
+      integer*4 BIGCAL_PROT_NBAD
+      integer*4 BIGCAL_PROT_BADPLUSGOOD
+      integer*4 BIGCAL_PROT_IYBAD(BIGCAL_PROT_MAXHITS)
+      integer*4 BIGCAL_PROT_IXBAD(BIGCAL_PROT_MAXHITS)
+      integer*4 BIGCAL_PROT_ADC_BAD(BIGCAL_PROT_MAXHITS)
+      
+      integer*4 BIGCAL_RCS_NBAD
+      integer*4 BIGCAL_RCS_BADPLUSGOOD
+      integer*4 BIGCAL_RCS_IYBAD(BIGCAL_RCS_MAXHITS)
+      integer*4 BIGCAL_RCS_IXBAD(BIGCAL_RCS_MAXHITS)
+      integer*4 BIGCAL_RCS_ADC_BAD(BIGCAL_RCS_MAXHITS)
+      
+      integer*4 BIGCAL_ATRIG_NBAD
+      integer*4 BIGCAL_ATRIG_BADPLUSGOOD
+      integer*4 BIGCAL_ATRIG_IGROUP_BAD(BIGCAL_ATRIG_MAXHITS)
+      integer*4 BIGCAL_ATRIG_IHALF_BAD(BIGCAL_ATRIG_MAXHITS)
+      integer*4 BIGCAL_ATRIG_ADC_BAD(BIGCAL_ATRIG_MAXHITS)
+
+      common/BIGCAL_BAD_ADC/
+     $     BIGCAL_PROT_NHIT_CH,
+     $     BIGCAL_RCS_NHIT_CH,
+     $     BIGCAL_ATRIG_NHIT_CH,
+     $     BIGCAL_PROT_NBAD,
+     $     BIGCAL_RCS_NBAD,
+     $     BIGCAL_ATRIG_NBAD,
+     $     BIGCAL_PROT_BADPLUSGOOD,
+     $     BIGCAL_RCS_BADPLUSGOOD,
+     $     BIGCAL_ATRIG_BADPLUSGOOD,
+     $     BIGCAL_PROT_IYBAD,
+     $     BIGCAL_PROT_IXBAD,
+     $     BIGCAL_PROT_ADC_BAD,
+     $     BIGCAL_RCS_IYBAD,
+     $     BIGCAL_RCS_IXBAD,
+     $     BIGCAL_RCS_ADC_BAD,
+     $     BIGCAL_ATRIG_IGROUP_BAD,
+     $     BIGCAL_ATRIG_IHALF_BAD,
+     $     BIGCAL_ATRIG_ADC_BAD
+
+*decoded quantities for calorimeter ADCs: 
+
+      integer*4 BIGCAL_PROT_NGOOD 
+      integer*4 BIGCAL_PROT_IYGOOD(BIGCAL_PROT_MAXHITS)
+      integer*4 BIGCAL_PROT_IXGOOD(BIGCAL_PROT_MAXHITS) 
+      
+      integer*4 BIGCAL_RCS_NGOOD 
+      integer*4 BIGCAL_RCS_IYGOOD(BIGCAL_RCS_MAXHITS)     
+      integer*4 BIGCAL_RCS_IXGOOD(BIGCAL_RCS_MAXHITS)
+      
+      real*4 BIGCAL_PROT_ADC_DECODED(BIGCAL_PROT_MAXHITS) 
+      real*4 BIGCAL_PROT_ADC_GOOD(BIGCAL_PROT_MAXHITS) 
+      real*4 BIGCAL_PROT_ECELL(BIGCAL_PROT_MAXHITS) 
+      real*4 BIGCAL_PROT_XGOOD(BIGCAL_PROT_MAXHITS) 
+      real*4 BIGCAL_PROT_YGOOD(BIGCAL_PROT_MAXHITS) 
+ 
+      real*4 BIGCAL_RCS_ADC_DECODED(BIGCAL_RCS_MAXHITS)
+      real*4 BIGCAL_RCS_ADC_GOOD(BIGCAL_RCS_MAXHITS)
+      real*4 BIGCAL_RCS_ECELL(BIGCAL_RCS_MAXHITS)
+      real*4 BIGCAL_RCS_XGOOD(BIGCAL_RCS_MAXHITS)
+      real*4 BIGCAL_RCS_YGOOD(BIGCAL_RCS_MAXHITS)
+
+      integer*4 BIGCAL_ALL_NGOOD
+      integer*4 BIGCAL_ALL_IYGOOD(BIGCAL_ALL_MAXHITS)
+      integer*4 BIGCAL_ALL_IXGOOD(BIGCAL_ALL_MAXHITS)
+
+      real*4 BIGCAL_ALL_ADC_GOOD(BIGCAL_ALL_MAXHITS)
+      real*4 BIGCAL_ALL_ECELL(BIGCAL_ALL_MAXHITS)
+      real*4 BIGCAL_ALL_XGOOD(BIGCAL_ALL_MAXHITS)
+      real*4 BIGCAL_ALL_YGOOD(BIGCAL_ALL_MAXHITS)
+
+      common/BIGCAL_DECODED_ADC/
+     $     BIGCAL_PROT_NGOOD,
+     $     BIGCAL_RCS_NGOOD,
+     $     BIGCAL_PROT_IYGOOD,
+     $     BIGCAL_PROT_IXGOOD,
+     $     BIGCAL_RCS_IYGOOD,
+     $     BIGCAL_RCS_IXGOOD,
+     $     BIGCAL_PROT_ADC_DECODED,
+     $     BIGCAL_PROT_ADC_GOOD,
+     $     BIGCAL_PROT_ECELL,
+     $     BIGCAL_PROT_XGOOD,
+     $     BIGCAL_PROT_YGOOD,
+     $     BIGCAL_RCS_ADC_DECODED,
+     $     BIGCAL_RCS_ADC_GOOD,
+     $     BIGCAL_RCS_ECELL,
+     $     BIGCAL_RCS_XGOOD,
+     $     BIGCAL_RCS_YGOOD,
+     $     BIGCAL_ALL_NGOOD,
+     $     BIGCAL_ALL_IYGOOD,
+     $     BIGCAL_ALL_IXGOOD,
+     $     BIGCAL_ALL_ADC_GOOD,
+     $     BIGCAL_ALL_ECELL,
+     $     BIGCAL_ALL_XGOOD,
+     $     BIGCAL_ALL_YGOOD
+
+*     diagnostic variables for some initial histograms to check sanity of data
+
+      integer*4 BIGCAL_IYMAX_ADC
+      integer*4 BIGCAL_IXMAX_ADC
+      integer*4 BIGCAL_ITRIGMAX_ADC
+      real*4 BIGCAL_MAX_ADC
+      common/BIGCAL_SIGNAL_MAX/
+     $     bigcal_iymax_adc,
+     $     bigcal_ixmax_adc,
+     $     bigcal_itrigmax_adc,
+     $     bigcal_max_adc
+
+*     "detector" arrays: organize the data for histogramming and 
+*     analysis purposes. define only "raw" and "good" arrays:
+*     also define cumulative quantities that get incremented during
+*     the run for efficiency calculations:
+c     also define the list of bad channels:
+      logical bigcal_bad_chan_list(bigcal_all_maxhits) ! true = bad channel
+      integer*4 BIGCAL_PROT_RAW_DET(BIGCAL_PROT_MAXHITS)
+      integer*4 BIGCAL_RCS_RAW_DET(BIGCAL_RCS_MAXHITS)
+      integer*4 BIGCAL_TDC_RAW_DET(BIGCAL_MAX_TDC,8) 
+      integer*4 BIGCAL_TDC_DET_NHIT(BIGCAL_MAX_TDC)
+      integer*4 BIGCAL_TDC_DET_NGOOD(BIGCAL_MAX_TDC)
+      integer*4 BIGCAL_ATRIG_RAW_DET(BIGCAL_ATRIG_MAXHITS)
+      integer*4 BIGCAL_TTRIG_RAW_DET(BIGCAL_TTRIG_MAXGROUPS,8)
+      integer*4 BIGCAL_TTRIG_DET_NHIT(BIGCAL_TTRIG_MAXGROUPS)
+      integer*4 BIGCAL_TTRIG_DET_NGOOD(BIGCAL_TTRIG_MAXGROUPS)
+      real*4 BIGCAL_PROT_GOOD_DET(BIGCAL_PROT_MAXHITS)
+      real*4 BIGCAL_RCS_GOOD_DET(BIGCAL_RCS_MAXHITS)
+      real*4 BIGCAL_ALL_ADC_DET(BIGCAL_ALL_MAXHITS)
+      real*4 BIGCAL_ALL_GOOD_DET(BIGCAL_ALL_MAXHITS)
+      real*4 BIGCAL_TDC_GOOD_DET(BIGCAL_MAX_TDC,8)
+      real*4 BIGCAL_TDC_SUM8(BIGCAL_MAX_TDC) 
+      real*4 BIGCAL_ATRIG_GOOD_DET(BIGCAL_ATRIG_MAXHITS)
+      real*4 BIGCAL_ATRIG_SUM64(BIGCAL_ATRIG_MAXHITS)
+      real*4 BIGCAL_TTRIG_GOOD_DET(BIGCAL_TTRIG_MAXGROUPS,8)
+      
+      common/BIGCAL_DETECTOR/
+     $     bigcal_bad_chan_list,
+     $     BIGCAL_PROT_RAW_DET,
+     $     BIGCAL_RCS_RAW_DET,
+     $     BIGCAL_TDC_RAW_DET,
+     $     BIGCAL_TDC_DET_NHIT,
+     $     BIGCAL_TDC_DET_NGOOD,
+     $     BIGCAL_ATRIG_RAW_DET,
+     $     BIGCAL_TTRIG_RAW_DET,
+     $     BIGCAL_TTRIG_DET_NHIT,
+     $     BIGCAL_TTRIG_DET_NGOOD,
+     $     BIGCAL_PROT_GOOD_DET,
+     $     BIGCAL_RCS_GOOD_DET,
+     $     BIGCAL_ALL_ADC_DET,
+     $     BIGCAL_ALL_GOOD_DET,
+     $     BIGCAL_TDC_GOOD_DET,
+     $     BIGCAL_TDC_SUM8,
+     $     BIGCAL_ATRIG_GOOD_DET,
+     $     BIGCAL_ATRIG_SUM64,
+     $     BIGCAL_TTRIG_GOOD_DET
+
+*     define cumulative quantities for the whole run which will 
+*     compute the cell-by-cell hits/clusters efficiency and average energy
+      integer*4 b_all_run_clst_good(bigcal_all_maxhits)
+      integer*4 b_all_run_clst_bad(bigcal_all_maxhits)
+      integer*4 b_all_run_Enum(bigcal_all_maxhits)
+      real*4 b_all_run_clst_eff(bigcal_all_maxhits)
+      real*4 b_all_run_Esum(bigcal_all_maxhits)
+      common/bigcal_clust_eff/
+     $     b_all_run_clst_good,
+     $     b_all_run_clst_bad,
+     $     b_all_run_Enum,
+     $     b_all_run_clst_eff,
+     $     b_all_run_Esum
+
+*     arrays for middle section hits to find clusters in the boundary rows:
+      
+c$$$      real*4 BIGCAL_MID_EHIT(30:35,32)
+c$$$      real*4 BIGCAL_MID_XHIT(30:35,32)
+c$$$      real*4 BIGCAL_MID_YHIT(30:35,32)
+c$$$
+c$$$      common/BIGCAL_MID_HITS/
+c$$$     $     BIGCAL_MID_EHIT,
+c$$$     $     BIGCAL_MID_XHIT,
+c$$$     $     BIGCAL_MID_YHIT
+
+*     analysis quantities: "clusters" 
+
+      
+*
+*     CTPTYPE=parm
+*
+*     cluster and cell cuts!!
+      integer*4 BIGCAL_CLSTR_NCELL_MIN
+      integer*4 BIGCAL_CLSTR_NCELLX_MAX
+      integer*4 BIGCAL_CLSTR_NCELLY_MAX
+      integer*4 BIGCAL_CLSTR_NXMOM_MAX ! number of blocks away from maximum to include in moment calculation
+      integer*4 BIGCAL_CLSTR_NYMOM_MAX ! number of blocks away from maximum to include in moment calculation
+      integer*4 BIGCAL_CLSTR_NXECL_MAX ! number of blocks away from maximum to include in energy sum
+      integer*4 BIGCAL_CLSTR_NYECL_MAX ! number of blocks away from maximum to include in energy sum
+      real*4 B_CLUSTER_CUT ! min. cluster energy
+      real*4 B_CLUSTER_MAX ! max. cluster energy
+      real*4 B_CELL_CUT_RCS ! min cell energy, RCS
+      real*4 B_CELL_CUT_PROT ! min cell energy, Prot
+      real*4 B_MIN_EMAX ! minimum energy of maximum cell
+      real*4 b_min_2max(2) !1 = min. fraction to reject cluster for 2nd max.
+                           !2 = min. energy to reject cluster for 2nd max.
+      real*4 b_prune_eclust(2)
+      real*4 b_trig_cut         ! for monte carlo analysis only: trig threshold
+      common/BIGCAL_CLSTR_CUTS/
+     $     BIGCAL_CLSTR_NCELL_MIN,
+     $     BIGCAL_CLSTR_NCELLX_MAX,
+     $     BIGCAL_CLSTR_NCELLY_MAX,
+     $     BIGCAL_CLSTR_NXMOM_MAX,
+     $     BIGCAL_CLSTR_NYMOM_MAX,
+     $     BIGCAL_CLSTR_NXECL_MAX,
+     $     BIGCAL_CLSTR_NYECL_MAX,
+     $     B_CLUSTER_CUT,
+     $     B_CLUSTER_MAX,
+     $     B_CELL_CUT_PROT,
+     $     B_CELL_CUT_RCS,
+     $     B_MIN_EMAX,
+     $     b_min_2max,
+     $     b_prune_eclust,
+     $     b_trig_cut
+*     arrays of closest column number in row 33 to column number in row 32 
+*     and vice versa
+      integer*4 bigcal_ixclose_prot(bigcal_prot_nx)
+      integer*4 bigcal_ixclose_rcs(bigcal_rcs_nx)
+      common/bigcal_ixclose_mid/
+     $     bigcal_ixclose_prot,
+     $     bigcal_ixclose_rcs
+
+*
+*     CTPTYPE=event
+*
+*     cluster arrays and checks
+      integer*4 BIGCAL_ALL_NCLUST_GOOD
+      integer*4 BIGCAL_ALL_NCLSTR 
+      integer*4 BIGCAL_ALL_CLSTR_NCELL(BIGCAL_ALL_NCLSTR_MAX) 
+      integer*4 BIGCAL_ALL_CLSTR_NCELLX(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_NCELLY(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_NBADLIST(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_IYMAX(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_IXMAX(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_IYLO(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_IYHI(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_IXLO(BIGCAL_ALL_NCLSTR_MAX,3)
+      integer*4 BIGCAL_ALL_CLSTR_IXHI(BIGCAL_ALL_NCLSTR_MAX,3)
+      integer*4 BIGCAL_ALL_CLSTR_IYCELL(BIGCAL_ALL_NCLSTR_MAX,BIGCAL_CLSTR_NCELL_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_IXCELL(BIGCAL_ALL_NCLSTR_MAX,BIGCAL_CLSTR_NCELL_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_NCELL8(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_NCELL64(BIGCAL_ALL_NCLSTR_MAX)
+      integer*4 BIGCAL_ALL_CLSTR_NHIT8(BIGCAL_ALL_NCLSTR_MAX,10)
+      integer*4 BIGCAL_ALL_CLSTR_NHIT64(BIGCAL_ALL_NCLSTR_MAX,6)
+      integer*4 BIGCAL_ALL_CLSTR_IROW8(BIGCAL_ALL_NCLSTR_MAX,10)
+      integer*4 BIGCAL_ALL_CLSTR_ICOL8(BIGCAL_ALL_NCLSTR_MAX,10)
+      integer*4 BIGCAL_ALL_CLSTR_IROW64(BIGCAL_ALL_NCLSTR_MAX,6)
+      integer*4 BIGCAL_ALL_CLSTR_ICOL64(BIGCAL_ALL_NCLSTR_MAX,6)
+      real*4 BIGCAL_ALL_CLSTR_XCELL(BIGCAL_ALL_NCLSTR_MAX,BIGCAL_CLSTR_NCELL_MAX)
+      real*4 BIGCAL_ALL_CLSTR_YCELL(BIGCAL_ALL_NCLSTR_MAX,BIGCAL_CLSTR_NCELL_MAX)
+      real*4 BIGCAL_ALL_CLSTR_ECELL(BIGCAL_ALL_NCLSTR_MAX,BIGCAL_CLSTR_NCELL_MAX)
+      real*4 BIGCAL_ALL_CLSTR_ACELL(BIGCAL_ALL_NCLSTR_MAX,BIGCAL_CLSTR_NCELL_MAX)
+      real*4 BIGCAL_ALL_CLSTR_S8(BIGCAL_ALL_NCLSTR_MAX,10) ! sum of hits in this cluster
+      real*4 BIGCAL_ALL_CLSTR_TCELL8(BIGCAL_ALL_NCLSTR_MAX,10,8) ! max of 10 unique sum8, 8 hits per tdc 
+      real*4 BIGCAL_ALL_CLSTR_TCELL64(BIGCAL_ALL_NCLSTR_MAX,6,8) ! max of 6 unique sum64, 8 hits per tdc
+      real*4 BIGCAL_ALL_CLSTR_A64(BIGCAL_ALL_NCLSTR_MAX,6) ! trigger group amplitudes
+      real*4 BIGCAL_ALL_CLSTR_SUM64(BIGCAL_ALL_NCLSTR_MAX,6) ! sum of blocks comprising group
+      real*4 BIGCAL_ALL_CLSTR_XMOM(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_YMOM(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_X(BIGCAL_ALL_NCLSTR_MAX) 
+      real*4 BIGCAL_ALL_CLSTR_Y(BIGCAL_ALL_NCLSTR_MAX) 
+      real*4 BIGCAL_ALL_CLSTR_ETOT(BIGCAL_ALL_NCLSTR_MAX) 
+      real*4 BIGCAL_ALL_CLSTR_ATOT(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_T8MEAN(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_T8RMS(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_T8CUT(bigcal_all_nclstr_max)
+      real*4 BIGCAL_ALL_CLSTR_T8CUT_COR(bigcal_all_nclstr_max) ! 
+      real*4 BIGCAL_ALL_CLSTR_T64MEAN(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 bigcal_all_clstr_t64cut(bigcal_all_nclstr_max)
+      real*4 bigcal_all_clstr_t64cut_cor(bigcal_all_nclstr_max)
+      real*4 BIGCAL_ALL_CLSTR_T64RMS(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_CHI2(BIGCAL_ALL_NCLSTR_MAX)
+      real*4 BIGCAL_ALL_CLSTR_CHI2CONTR(BIGCAL_ALL_NCLSTR_MAX,6)
+      logical bigcal_clstr_bad_chan(bigcal_all_nclstr_max,bigcal_clstr_ncell_max) ! is channel in the bad list?
+      logical bigcal_clstr_keep(bigcal_all_nclstr_max) ! did this cluster pass prune checks?
+
+      common/BIGCAL_CLUSTERS/
+     $     bigcal_all_nclust_good,
+     $     BIGCAL_ALL_NCLSTR,
+     $     BIGCAL_ALL_CLSTR_NCELL,
+     $     BIGCAL_ALL_CLSTR_NCELLX,
+     $     BIGCAL_ALL_CLSTR_NCELLY,
+     $     BIGCAL_ALL_CLSTR_NBADLIST,
+     $     BIGCAL_ALL_CLSTR_IYMAX,
+     $     BIGCAL_ALL_CLSTR_IXMAX,
+     $     BIGCAL_ALL_CLSTR_IYLO,
+     $     BIGCAL_ALL_CLSTR_IYHI,
+     $     BIGCAL_ALL_CLSTR_IXLO,
+     $     BIGCAL_ALL_CLSTR_IXHI,
+     $     BIGCAL_ALL_CLSTR_IYCELL,
+     $     BIGCAL_ALL_CLSTR_IXCELL,
+     $     BIGCAL_ALL_CLSTR_NCELL8,
+     $     BIGCAL_ALL_CLSTR_NCELL64,
+     $     BIGCAL_ALL_CLSTR_NHIT8,
+     $     BIGCAL_ALL_CLSTR_NHIT64,
+     $     BIGCAL_ALL_CLSTR_IROW8,
+     $     BIGCAL_ALL_CLSTR_ICOL8,
+     $     BIGCAL_ALL_CLSTR_IROW64,
+     $     BIGCAL_ALL_CLSTR_ICOL64,
+     $     BIGCAL_ALL_CLSTR_XCELL,
+     $     BIGCAL_ALL_CLSTR_YCELL,
+     $     BIGCAL_ALL_CLSTR_ECELL,
+     $     BIGCAL_ALL_CLSTR_ACELL,
+     $     BIGCAL_ALL_CLSTR_S8,
+     $     BIGCAL_ALL_CLSTR_TCELL8,
+     $     BIGCAL_ALL_CLSTR_TCELL64,
+     $     BIGCAL_ALL_CLSTR_A64,
+     $     BIGCAL_ALL_CLSTR_SUM64,
+     $     BIGCAL_ALL_CLSTR_XMOM,
+     $     BIGCAL_ALL_CLSTR_YMOM,
+     $     BIGCAL_ALL_CLSTR_X,
+     $     BIGCAL_ALL_CLSTR_Y,
+     $     BIGCAL_ALL_CLSTR_ETOT,
+     $     BIGCAL_ALL_CLSTR_ATOT,
+     $     BIGCAL_ALL_CLSTR_T8MEAN,
+     $     BIGCAL_ALL_CLSTR_T8RMS,
+     $     bigcal_all_clstr_t8cut,
+     $     bigcal_all_clstr_t8cut_cor,
+     $     BIGCAL_ALL_CLSTR_T64MEAN,
+     $     BIGCAL_ALL_CLSTR_T64RMS,
+     $     bigcal_all_clstr_t64cut,
+     $     bigcal_all_clstr_t64cut_cor,
+     $     BIGCAL_ALL_CLSTR_CHI2,
+     $     BIGCAL_ALL_CLSTR_CHI2CONTR,
+     $     bigcal_clstr_bad_chan,
+     $     bigcal_clstr_keep
+
+      integer BIGCAL_NMAXIMA ! number of maxima found
+      logical BIGCAL_EDGE_MAX(BIGCAL_ALL_NCLSTR_MAX) ! maximum is at edge
+      logical BIGCAL_NOT_ENOUGH(BIGCAL_ALL_NCLSTR_MAX) ! cluster has only one cell with a hit
+      logical BIGCAL_TOO_LONG_X(BIGCAL_ALL_NCLSTR_MAX) ! cluster horizontal length too long
+      logical BIGCAL_TOO_LONG_Y(BIGCAL_ALL_NCLSTR_MAX) ! cluster vertical length is too long
+      logical BIGCAL_BELOW_CUT(BIGCAL_ALL_NCLSTR_MAX) ! cluster energy sum is below cluster cut
+      logical BIGCAL_ABOVE_MAX(BIGCAL_ALL_NCLSTR_MAX) ! cluster energy sum is above cluster max
+      logical BIGCAL_SECOND_MAX(BIGCAL_ALL_NCLSTR_MAX) ! cluster has two maxima, more than one showering particle
+      common/BIGCAL_CLUSTER_CHECKS/
+     $     BIGCAL_NMAXIMA,
+     $     BIGCAL_EDGE_MAX,
+     $     BIGCAL_NOT_ENOUGH,
+     $     BIGCAL_TOO_LONG_X,
+     $     BIGCAL_TOO_LONG_Y,
+     $     BIGCAL_BELOW_CUT,
+     $     BIGCAL_ABOVE_MAX,
+     $     BIGCAL_SECOND_MAX
+      
+c     bigcal_physics: reconstructed physics quantities      
+
+      integer*4 BIGCAL_PHYS_NTRACK 
+      real*4 BIGCAL_TRACK_THETARAD(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_THETADEG(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_PHIRAD(BIGCAL_MAX_NTRACK) 
+      real*4 BIGCAL_TRACK_PHIDEG(BIGCAL_MAX_NTRACK) 
+      real*4 BIGCAL_TRACK_ENERGY(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_ELOSS(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_TIME(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_XFACE(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_YFACE(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_ZFACE(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_PX(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_PY(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_PZ(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_BETA(BIGCAL_MAX_NTRACK)
+      real*4 BIGCAL_TRACK_TOF(BIGCAL_MAX_NTRACK)
+      real*4 bigcal_track_tof_cor(bigcal_max_ntrack)
+      real*4 BIGCAL_TRACK_COIN_TIME(BIGCAL_MAX_NTRACK)
+      
+      common/BIGCAL_PHYSICS/
+     $     BIGCAL_PHYS_NTRACK,
+     $     BIGCAL_TRACK_THETARAD,
+     $     BIGCAL_TRACK_THETADEG,
+     $     BIGCAL_TRACK_PHIRAD,
+     $     BIGCAL_TRACK_PHIDEG,
+     $     BIGCAL_TRACK_ENERGY,
+     $     BIGCAL_TRACK_ELOSS,
+     $     BIGCAL_TRACK_TIME,
+     $     BIGCAL_TRACK_XFACE,
+     $     BIGCAL_TRACK_YFACE,
+     $     BIGCAL_TRACK_ZFACE,
+     $     BIGCAL_TRACK_PX,
+     $     BIGCAL_TRACK_PY,
+     $     BIGCAL_TRACK_PZ,
+     $     BIGCAL_TRACK_BETA,
+     $     BIGCAL_TRACK_TOF,
+     $     bigcal_track_tof_cor,
+     $     BIGCAL_TRACK_COIN_TIME
+
+c     bigcal_coin_physics: choose the best track!
+
+      integer*4 bigcal_itrack_best
+      real*4 bigcal_thetarad
+      real*4 bigcal_phirad
+      real*4 bigcal_energy
+      real*4 bigcal_time
+      real*4 bigcal_xface
+      real*4 bigcal_yface
+      real*4 bigcal_zface
+      real*4 bigcal_px
+      real*4 bigcal_py
+      real*4 bigcal_pz
+      real*4 bigcal_beta
+      real*4 bigcal_eloss
+      real*4 bigcal_tof
+      real*4 bigcal_tof_cor
+      real*4 bigcal_ctime
+
+      common/bigcal_singles/
+     $     bigcal_itrack_best,
+     $     bigcal_thetarad,
+     $     bigcal_phirad,
+     $     bigcal_energy,
+     $     bigcal_time,
+     $     bigcal_xface,
+     $     bigcal_yface,
+     $     bigcal_zface,
+     $     bigcal_px,
+     $     bigcal_py,
+     $     bigcal_pz,
+     $     bigcal_beta,
+     $     bigcal_eloss,
+     $     bigcal_tof,
+     $     bigcal_tof_cor,
+     $     bigcal_ctime
+c     variables for BigCal ep (or MC) calibration:
+      real*4 bigcal_matrix(bigcal_all_maxhits,bigcal_all_maxhits)
+      real*4 bigcal_vector(bigcal_all_maxhits)
+      integer*4 bigcal_matr_iflag
+      integer*4 bigcal_nmatr_event
+      integer*4 bigcal_matr_iochan
+      integer*4 bigcal_matr_nempty
+      integer*4 bigcal_matr_nsmalldiag
+      integer*4 bigcal_matr_iempty(bigcal_all_maxhits)
+      integer*4 bigcal_matr_ismalld(bigcal_all_maxhits)
+      common/bigcal_calibration/
+     $     bigcal_matrix,
+     $     bigcal_vector,
+     $     bigcal_matr_iflag,
+     $     bigcal_nmatr_event,
+     $     bigcal_matr_iochan,
+     $     bigcal_matr_nempty,
+     $     bigcal_matr_nsmalldiag,
+     $     bigcal_matr_iempty,
+     $     bigcal_matr_ismalld
+*
+*     CTPTYPE=parm
+*
+      integer*4 bigcal_Ncalib
+      integer*4 bigcal_calib_iylo
+      integer*4 bigcal_calib_iyhi
+      integer*4 bigcal_calib_ixlo(2)
+      integer*4 bigcal_calib_ixhi(2)
+      common/bigcal_calib_range/
+     $     bigcal_Ncalib,
+     $     bigcal_calib_iylo,
+     $     bigcal_calib_iyhi,
+     $     bigcal_calib_ixlo,
+     $     bigcal_calib_ixhi
+
+*
+*     CTPTYPE=event
+*
+
+c     variables for reading Protvino Monte Carlo events ('.dat' style output!!!)
+      
+      integer*4 iev_mc
+      integer*4 nvtrk_mc
+      integer*4 pid_mc(100)
+      integer*4 isum_mc(2),ix_mc,iy_mc
+      integer*4 idesum_mc(2)
+      integer*4 iev_p_mc
+      real*4 xv_mc,yv_mc,zv_mc,px_mc(100),py_mc(100),pz_mc(100)
+      real*4 esum_mc(2)
+      real*4 allde_mc(2)
+      real*4 npe_mc,dedx_mc
+      real*4 pp_mc,ptheta_mc,pphi_mc,xv_p_mc,yv_p_mc,zv_p_mc
+      logical EOF_MC_DAT
+
+      common/BIGCAL_MC_STUFF/
+     $     iev_mc,nvtrk_mc,pid_mc,isum_mc,ix_mc,iy_mc,
+     $     idesum_mc,iev_p_mc,
+     $     xv_mc,yv_mc,zv_mc,px_mc,py_mc,pz_mc,esum_mc,
+     $     allde_mc,npe_mc,dedx_mc,
+     $     pp_mc,ptheta_mc,pphi_mc,xv_p_mc,yv_p_mc,zv_p_mc,
+     $     EOF_MC_DAT
+
+      

@@ -1,0 +1,209 @@
+******************* begin: gen_filenames.cmn ***********************
+*
+*     Common block to hold the raw scaler information and
+*     quantities calculated from the scaler events (time, current, etc...)
+*
+* $Log: gen_scalers.cmn,v $
+* Revision 1.13.14.1.2.3  2009/11/04 15:09:42  jones
+* Add vairable g_run_time_beam_on
+*
+* Revision 1.13.14.1.2.2  2009/09/29 14:02:17  jones
+* Add variables for charge asymmetry calcualtion
+*
+* Revision 1.13.14.1.2.1  2009/03/31 19:32:59  cdaq
+* *** empty log message ***
+*
+* Revision 1.13.14.1  2007/11/09 17:16:33  cdaq
+*  increased gscaler array to 1000
+*
+* Revision 1.13  2004/05/11 18:23:26  jones
+* Add logical variable skip_events to BEAMCURRENT common block
+*
+* Revision 1.12  2003/09/05 20:29:03  jones
+* Merge in online03 changes (mkj)
+*
+* Revision 1.11.2.2  2003/09/05 14:12:17  jones
+* Updates for using syncfilter (mkj)
+*
+* Revision 1.11.2.1  2003/08/14 00:44:13  cdaq
+* Modify to be able to write scaler rates for each read to a file (mkj)
+*
+* Revision 1.11  1999/02/23 19:07:06  csa
+* (JRA) Add WEIRD_CLEARS common
+*
+* Revision 1.10  1999/02/10 17:40:52  csa
+* Added beam-on variables (D. McKee)
+*
+* Revision 1.9  1996/09/04 15:46:56  saw
+* (JRA) Add g_scaler_event_num
+*
+* Revision 1.8  1996/04/30 14:05:12  saw
+* (JRA) Add some bcm stuff
+*
+* Revision 1.7  1996/01/17 15:47:29  cdaq
+* (JRA) Add current monitor variables, time variable, and delta_scalers
+*
+* Revision 1.6  1995/09/01 13:02:09  cdaq
+* (JRA) Add time into run variable
+*
+* Revision 1.5  1995/05/11  15:13:43  cdaq
+* (SAW) Change scalers and evscalers to be real*8
+*
+* Revision 1.4  1995/04/06  20:16:52  cdaq
+* (SAW) Make scalers real
+*
+* Revision 1.3  1994/12/18  04:04:53  cdaq
+* (SAW) Add array and common for event by event scalers
+*
+* Revision 1.2  1994/08/03  20:13:12  cdaq
+* (SAW) Add "CTPTYPE=parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.1  1994/06/21  16:36:57  cdaq
+* Initial revision
+*
+*     CTPTYPE=parm
+*
+      integer*4 MAX_NUM_SCALERS
+      parameter (MAX_NUM_SCALERS=1000)
+      integer*4 MAX_NUM_EVSCALERS
+      parameter (MAX_NUM_EVSCALERS=16)
+      integer*4 MAX_WRITEOUT_SCALERS
+      parameter (MAX_WRITEOUT_SCALERS=10)
+      integer*4 INDEX_WRITEOUT_SCALERS(10)
+      integer*4 NUM_WRITEOUT_SCALERS
+
+      integer*4 gclock_index      !index of hardware scaler clock.
+      real*8 gclock_rate          ! rate of hardware scaler clock.
+*
+*     CTPTYPE=event
+*
+      integer gscaler_nroll(MAX_NUM_SCALERS)
+      real*8 gscaler(MAX_NUM_SCALERS)         ! Current scaler values
+      real*8 gscaler_old(MAX_NUM_SCALERS)     ! Scaler values at last event
+      real*8 gscaler_change(MAX_NUM_SCALERS)  ! prev_scalers - scalers
+      real*8 gscaler_skipped(MAX_NUM_SCALERS)  ! prev_scalers - scalers
+      real*8 gscaler_saved(MAX_NUM_SCALERS)  ! prev_scalers - scalers
+      real*8 g_run_time,g_run_time_beam_on                       !time of run at most recent scaler event
+      real*8 g_beam_on_run_time(2)               ! accumulated time of run for which
+      real*8 g_beam_on_run_time_help(2)               ! accumulated time of run for which
+      real*8 g_beam_on_run_time_helm(2)               ! accumulated time of run for which
+                                              ! beam current exceeded beam_on_thresh_cur.
+      real*8 ave_current_bcm(3)
+      real*8 ave_current_bcm_help(2)
+      real*8 ave_current_bcm_helm(2)
+      integer g_replay_time                   !time since start of run (from cpu clock) 
+      logical syncfilter_on
+      integer insync 
+*
+      common /SCALERS/ gscaler, gscaler_old, gscaler_change,
+     $     ave_current_bcm,ave_current_bcm_help,ave_current_bcm_helm,gscaler_skipped,gscaler_saved,
+     $     gclock_rate, g_run_time,g_run_time_beam_on, gclock_index, g_replay_time,
+     $     gscaler_nroll, g_beam_on_run_time, g_beam_on_run_time_help, g_beam_on_run_time_helm,syncfilter_on,insync 
+
+
+ccccccccccccccccccccccccc
+cc InSANE SCALERS ccccccc
+ccccccccccccccccccccccccc
+c For now I will only grab the scaler value and the change
+c since HBOOK can only handle common blocks with <1000 columns
+      real*8 runtime,runtimebeam,beamonruntime(2)
+      real*8 beamonruntimehelp(2),beamonruntimehelm(2)
+      real*8 cerscaler(12),cerscaler_change(12),cerscaler_skipped(12)
+      real*8 cerscaler_old(12),cerscaler_saved(12)
+      integer cerscalernroll(12)
+      real*8 tkscaler(32),tkscaler_change(32),tkscaler_skipped(32)
+      real*8 tkscaler_old(32),tkscaler_saved(32)
+      integer tkscalernroll(32)
+      integer nbcscalers
+      real*8 bcscaler(272),bcscaler_change(272),bcscaler_skipped(272)
+      real*8 bcscaler_old(272),bcscaler_saved(272)
+      integer bcscalernroll(272)
+      real*8 lucscaler(12),lucscaler_change(12),lucscaler_skipped(12)
+      real*8 lucscaler_old(12),lucscaler_saved(12)
+      integer lucscalernroll(12)
+      common /SCALERS1/ nbcscalers,runtime, runtimebeam, beamonruntime,
+     $       beamonruntimehelp,
+     $       beamonruntimehelm
+     $       ,cerscaler,cerscaler_change
+c,cerscaler_skipped,
+c     $       cerscalernroll,cerscaler_old
+c     $       ,cerscaler_saved
+     $       ,tkscaler,tkscaler_change
+c,tkscaler_skipped,
+c     $       tkscalernroll,tkscaler_old
+c,tkscaler_saved
+     $       ,bcscaler,bcscaler_change
+c,bcscaler_skipped,
+c     $       bcscalernroll,bcscaler_old,bcscaler_saved
+     $       ,lucscaler,lucscaler_change
+c,lucscaler_skipped,
+c     $       lucscalernroll,lucscaler_old,lucscaler_saved
+ccccccccccccccccccccccccc
+cc InSANE SCALERS ccccccc
+ccccccccccccccccccccccccc
+
+
+c For Gen it is noticed that some scaler channels are randomly clearing
+c themselves.  The following is to
+                         
+      real*8 gscalweird_lostcounts(MAX_NUM_SCALERS)
+      integer*4 gscalweird_nclears(MAX_NUM_SCALERS)
+      integer*4 gscalweird_lastval(MAX_NUM_SCALERS)
+*     CTPTYPE=parm
+      integer*4 gscalweirdcorrect_flag
+*     CTPTYPE=event
+
+      common /WEIRD_CLEARS/ gscalweird_lostcounts,
+     $     gscalweird_nclears,gscalweird_lastval,gscalweirdcorrect_flag
+
+*
+      integer*4 gscal_lastevnum(2)      ! check for missing/out of order of scaler events
+      integer*4 gscal_evnum_roll(2)
+      real*8 evscalers(MAX_NUM_EVSCALERS)
+*
+      common /EVSCALERS/ evscalers, gscal_lastevnum, gscal_evnum_roll
+*
+*     CTPTYPE=parm
+*
+      integer*4 gbcm1_index
+      integer*4 gbcm2_index
+      integer*4 gbcm3_index
+      integer*4 gunser_index
+      integer*4 bcm_for_threshold_cut
+      real*8 gbcm1_gain
+      real*8 gbcm2_gain
+      real*8 gbcm3_gain
+      real*8 gunser_gain
+      real*8 gbcm1_offset
+      real*8 gbcm2_offset
+      real*8 gbcm3_offset
+      real*8 gunser_offset
+      real*8 g_beam_on_thresh_cur(2)     ! threshold for beam to be on.
+*
+*     CTPTYPE=event
+*
+      real*8 gbcm1_charge,gbcm1_charge_help,gbcm1_charge_helm
+      real*8 gbcm2_charge,gbcm2_charge_help,gbcm2_charge_helm
+      real*8 gbcm3_charge
+      real*8 gunser_charge
+      real*8 g_beam_on_bcm_charge(2)   ! "beam on" accumulated charge
+      real*8 g_beam_on_bcm_charge_help(2)   ! "beam on" accumulated charge
+      real*8 g_beam_on_bcm_charge_helm(2)   ! "beam on" accumulated charge
+      integer*4 gscaler_event_num
+      logical skip_events
+
+*
+      common/BEAMCURRENT/
+     &    gbcm1_gain, gbcm2_gain, gbcm3_gain, gunser_gain,
+     &    gbcm1_offset, gbcm2_offset, gbcm3_offset, gunser_offset,
+     &    gbcm1_charge, gbcm2_charge, gbcm3_charge, gunser_charge,
+     &    gbcm1_charge_help,gbcm1_charge_helm,gbcm2_charge_help,gbcm2_charge_helm,
+     &    g_beam_on_bcm_charge,g_beam_on_bcm_charge_help,g_beam_on_bcm_charge_helm, g_beam_on_thresh_cur,
+     &    gbcm1_index, gbcm2_index, gbcm3_index, gunser_index,bcm_for_threshold_cut,
+     &    gscaler_event_num,skip_events
+      common/ WRITESCALERS/
+     & NUM_WRITEOUT_SCALERS,INDEX_WRITEOUT_SCALERS
+
+      integer*4 g_hel_pos 
+      integer*4 g_hel_neg 
+      common/HelScaler/g_hel_pos,g_hel_neg

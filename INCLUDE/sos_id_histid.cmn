@@ -1,0 +1,119 @@
+*_______________________________________________________________________
+*      sos_id_histid.cmn
+*
+*      This common block contains the HBOOK histogram id numbers
+*      for all sos particle id histograms in which direct hfill 
+*      calls are made.
+*
+*      It also contains the paramter flags to turn on and off histograming
+*      of each of the hard coded blocks.
+*
+*      Created 9 April 1994	D. F. Geesaman
+*
+* $Log: sos_id_histid.cmn,v $
+* Revision 1.11  1999/02/23 19:20:42  csa
+* (JRA) Add sidscindpos_pid, cleanup
+*
+* Revision 1.10  1999/02/03 21:13:34  saw
+* Code for new Shower counter tubes
+*
+* Revision 1.9  1996/09/04 16:28:58  saw
+* (JRA) Add sidmisctdcs
+*
+* Revision 1.8  1996/01/17 15:09:34  cdaq
+* (JRA) Add sidscintimes histogram
+*
+* Revision 1.7  1995/09/01 13:02:48  cdaq
+* (JRA) Add dpos histid's
+*
+* Revision 1.6  1995/08/11  16:31:11  cdaq
+* (JRA) Add dpos (track pos - hit pos) histograms
+*
+* Revision 1.5  1995/07/28  14:27:26  cdaq
+* (JRA) Add sidsum histogram id holders
+*
+* Revision 1.4  1995/05/22  19:07:42  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+*
+* Revision 1.3  1995/05/12  12:23:46  cdaq
+* (JRA) Modify/add user histograms
+*
+* Revision 1.2  1994/08/05  21:05:04  cdaq
+* (SAW) Add makereg directive with required include files
+*       Add "CTPTYPE=parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.1  1994/04/12  21:16:27  cdaq
+* Initial revision
+*
+*%%   include 'sos_data_structures.cmn'
+*%%   include 'sos_scin_parms.cmn'
+*
+*     The following don't need to be registered??
+*     CTPTYPE=parm
+      integer*4 sidscinrawtothits
+      integer*4 sidscinplane
+      integer*4 sidscinallpostdc(SNUM_SCIN_PLANES)
+      integer*4 sidscinallnegtdc(SNUM_SCIN_PLANES)
+      integer*4 sidscinallposadc(SNUM_SCIN_PLANES)
+      integer*4 sidscinallnegadc(SNUM_SCIN_PLANES)
+      integer*4 sidscincounters(SNUM_SCIN_PLANES)
+      integer*4 sidscinposadc(SNUM_SCIN_PLANES,snum_scin_elements)
+      integer*4 sidscinnegadc(SNUM_SCIN_PLANES,snum_scin_elements)
+      integer*4 sidscinpostdc(SNUM_SCIN_PLANES,snum_scin_elements)
+      integer*4 sidscinnegtdc(SNUM_SCIN_PLANES,snum_scin_elements)
+      integer*4 sidscinalltimes
+      integer*4 sidscindpos(SNUM_SCIN_PLANES)
+      integer*4 sidscindpos_pid(SNUM_SCIN_PLANES)
+      integer*4 sidsumposadc(SNUM_SCIN_PLANES)
+      integer*4 sidsumnegadc(SNUM_SCIN_PLANES)
+      integer*4 sidsumpostdc(SNUM_SCIN_PLANES)
+      integer*4 sidsumnegtdc(SNUM_SCIN_PLANES)
+      integer*4 sidscintimes
+
+      integer*4 sidcalplane
+      integer*4 sidcalhits(SMAX_CAL_COLUMNS)
+      integer*4 sidcalposhits(SMAX_CAL_COLUMNS)
+      integer*4 sidcalneghits(SMAX_CAL_COLUMNS)
+      integer*4 sidcalsumadc
+      integer*4 sidcaldpos
+
+      integer*4 siddcdposx,siddcdposy,siddcdposxp,siddcdposyp
+      integer*4 sidmisctdcs
+*
+      common/sos_id_histid/
+     &     sidscinrawtothits,
+     &     sidscinplane,
+     &     sidscinallpostdc,
+     &     sidscinallnegtdc,
+     &     sidscinallposadc,
+     &     sidscinallnegadc,
+     &     sidscincounters,
+     &     sidscinposadc,
+     &     sidscinnegadc,
+     &     sidscinpostdc,
+     &     sidscinnegtdc,
+     &     sidscinalltimes,
+     &     sidscintimes,
+     &     sidsumposadc,
+     &     sidsumnegadc,
+     &     sidsumpostdc,
+     &     sidsumnegtdc,
+     &     sidscindpos,
+     &     sidcalplane,
+     &     sidcalhits,
+     &     sidcalsumadc,
+     &     sidcalposhits,
+     &     sidcalneghits,
+     &     sidcaldpos,
+     &     siddcdposx,siddcdposy,siddcdposxp,siddcdposyp,
+     &     sidmisctdcs,
+     &     sidscindpos_pid
+
+*
+*     CTPTYPE=parm
+*
+*      flags to turn on (.eq.1) or off (.eq. 0) hard coded histograms
+       integer*4 sturnon_scin_raw_hist
+*
+       common/sos_id_hist_flags/
+     &      sturnon_scin_raw_hist

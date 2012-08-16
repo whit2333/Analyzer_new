@@ -1,0 +1,67 @@
+#
+# This directory contains code that is needed to in some ports of the
+# Hall C analyzer to platforms other than HPUX.  For example, it contains
+# definitions of some fortran functions that are missing under F2C/Linux.
+#
+# $Log: Makefile.Unix,v $
+# Revision 1.5.24.1  2007/09/10 20:08:02  pcarter
+# Implemented changes to allow compilation on RHEL 3,4,5 and MacOSX
+#
+# Revision 1.5  2000/11/30 14:23:03  saw
+# Add other_wrappers.f for jidnnt
+#
+# Revision 1.4  1998/12/09 16:31:16  saw
+# Remove dependence on Csoft environment variable
+#
+# Revision 1.3  1998/12/01 20:37:29  saw
+# (SAW) Linux fixes
+#
+# Revision 1.2  1996/11/22 17:05:53  saw
+# (SAW) Add routines for porting to Linux and AIX
+#
+# Revision 1.1  1996/09/09 13:34:01  saw
+# Initial revision
+#
+NEWSTYLE=1
+include ../../etc/Makefile
+include ../../etc/Makefile.flags
+
+ifeq ($(MYOS),AIX)
+  libsources =  bit_wrappers.f
+  install-dirs := lib
+else
+  ifeq ($(MYOS),Linux)
+    ifeq ($(F77COMPILER),Absoft)
+      libsources =  absoft_wrappers.f
+    else
+      libsources =  bit_wrappers.f trig_wrappers.f ran_wrappers.f \
+		    other_wrappers.f
+    endif
+    install-dirs := lib
+  else
+    libsources =  
+    install-dirs :=
+  endif
+endif
+
+sources = $(libsources)
+
+lib_targets := $(patsubst %.f, libport.a(%.o), $(libsources)) \
+			libport.a(cwrappers.o)
+
+#default:
+#	@echo "nothing to make"
+
+ifdef NFSDIRECTORY
+../%.f : $(NFSDIRECTORY)/PORT/%.f
+	ln -s $< $@
+
+../%.c : $(NFSDIRECTORY)/PORT/%.c
+	ln -s $< $@
+
+.PRECIOUS: ../%.f ../%.c
+endif
+
+cwrappers.o: ../cwrappers.c
+
+include $(libsources:.f=.d) cwrappers.d

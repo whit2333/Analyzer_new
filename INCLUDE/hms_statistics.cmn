@@ -1,0 +1,219 @@
+*     hms_statistics.cmn
+*     common blocks containing event statistics for h_reconstruction
+* $Log: hms_statistics.cmn,v $
+* Revision 1.12.20.1  2007/08/22 19:09:31  frw
+* added FPP
+*
+* Revision 1.13  2006/06/22 frw
+* added FPP variables
+*
+* Revision 1.12  2003/09/05 21:05:10  jones
+* Merge in online03 changes (mkj)
+*
+* Revision 1.11.2.1  2003/04/02 22:26:20  cdaq
+* added some variables for scint. effic tests (from oct 1999 online) - JRA
+*
+* Revision 1.11  1996/09/04 16:24:34  saw
+* (SAW) Change ' to '' in comments
+*
+* Revision 1.10  1996/01/17 16:03:53  cdaq
+* (JRA) Remove some obsolete common blocks
+*
+* Revision 1.9  1995/09/01 13:04:38  cdaq
+* (JRA) Add counter efficiency variables
+*
+* Revision 1.8  1995/08/11  16:36:30  cdaq
+* (JRA) Add hstat_mineff as a ctp parameter
+*
+* Revision 1.7  1995/07/28  14:42:20  cdaq
+* (JRA) Add pos/neg/both good arrays
+*
+* Revision 1.6  1995/05/22  19:02:26  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+* Fix a conflicting common block name
+*
+* Revision 1.5  1995/03/13  19:15:31  cdaq
+* (JRA) Add many new statistics
+*
+* Revision 1.4  1994/08/05  19:40:20  cdaq
+* * (SAW) Add makereg directive with required include files
+*         Add "CTPTYPE=parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.3  1994/06/15  21:00:27  cdaq
+* (DFG) add scin plane efficiency
+*
+* Revision 1.2  1994/06/14  03:30:16  cdaq
+* (DFG) add chamber efficiency and sigma
+*
+* Revision 1.1  1994/06/06  16:52:57  cdaq
+* Initial revision
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'hms_data_structures.cmn'
+
+*
+*     CTPTYPE=parm
+*
+      real*4 hstat_maxchisq
+      real*4 hstat_slop
+      real*4 hstat_mineff
+*
+*     CTPTYPE=event
+*
+      integer*4 hstat_numevents
+      integer*4 hstat_trk(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hstat_poshit(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hstat_neghit(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hstat_orhit(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hstat_andhit(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hstat_trksum(hnum_scin_planes)
+      integer*4 hstat_possum(hnum_scin_planes)
+      integer*4 hstat_negsum(hnum_scin_planes)
+      integer*4 hstat_orsum(hnum_scin_planes)
+      integer*4 hstat_andsum(hnum_scin_planes)
+      real*4 hstat_peff(hnum_scin_planes,hnum_scin_elements)
+      real*4 hstat_neff(hnum_scin_planes,hnum_scin_elements)
+      real*4 hstat_oeff(hnum_scin_planes,hnum_scin_elements)
+      real*4 hstat_aeff(hnum_scin_planes,hnum_scin_elements)
+      real*4 hstat_poseff(hnum_scin_planes)
+      real*4 hstat_negeff(hnum_scin_planes)
+      real*4 hstat_oreff(hnum_scin_planes)
+      real*4 hstat_andeff(hnum_scin_planes)
+      real*4 heff_s1
+      real*4 heff_s2
+      real*4 heff_stof
+      real*4 heff_4_of_4
+      real*4 heff_3_of_4
+
+      common/hscin_statistics/
+     &  hstat_numevents,
+     &  hstat_trk,         !# of times track points near center of scin.
+     &  hstat_poshit,      !# of times the pos tube on scintillator fired
+     &  hstat_neghit,      !# of times the pos tube on scintillator fired
+     &  hstat_orhit,       !# of times either tube fired
+     &  hstat_andhit,      !# of times both tubes fired
+     &  hstat_trksum,      !summed over all counters on plane
+     &  hstat_possum,      !summed over all counters on plane
+     &  hstat_negsum,      !summed over all counters on plane
+     &  hstat_orsum,       !summed over all counters on plane
+     &  hstat_andsum,      !summed over all counters on plane
+     &  hstat_peff,        !pos efficiency for given counter.
+     &  hstat_neff,        !neg efficiency for given counter.
+     &  hstat_oeff,        !or  efficiency for given counter.
+     &  hstat_aeff,        !and efficiency for given counter.
+     &  hstat_poseff,      !efficiency over all counters on plane
+     &  hstat_negeff,      !efficiency over all counters on plane
+     &  hstat_oreff,       !efficiency over all counters on plane
+     &  hstat_andeff,      !efficiency over all counters on plane
+     &  hstat_slop,        !distance allowed from center of scintillator.
+     &  hstat_mineff,      !give warning if effic. < hstat_mineff
+     &  hstat_maxchisq,    !maximum chisq allowed to use track for eff. calc.
+     &  heff_s1,           !calculated trigger eff. for s1 =(s1x .or. s1y).
+     &  heff_s2,           !calculated trigger eff. for s2 =(s2x .or. s2y).
+     &  heff_stof,         !calculated trigger eff. for stof =(s1 .and. s2).
+     &  heff_4_of_4,       !calculated trigger eff. for 4/4 planes.
+     &  heff_3_of_4        !calculated trigger eff. for 3/4 planes.
+
+
+*
+*     CTPTYPE=parm
+*
+      real*4 hstat_cal_maxchisq
+      real*4 hstat_cal_slop
+*
+*     CTPTYPE=event
+*
+      integer*4 hstat_cal_numevents
+      integer*4 hstat_cal_trk(hmax_cal_columns,hmax_cal_rows)
+      integer*4 hstat_cal_hit(hmax_cal_columns,hmax_cal_rows)
+      integer*4 hstat_cal_trksum(hmax_cal_columns)
+      integer*4 hstat_cal_hitsum(hmax_cal_columns)
+      real*4 hstat_cal_eff(hmax_cal_columns,hmax_cal_rows)
+      real*4 hstat_cal_effsum(hmax_cal_columns)
+
+      common/hcal_statistics/
+     &  hstat_cal_numevents,
+     &  hstat_cal_trk,         !# of times track points near center of block.
+     &  hstat_cal_hit,         !# of times the tube on block was over threshold.
+     &  hstat_cal_trksum,      !summed over all blocks on plane.
+     &  hstat_cal_hitsum,      !summed over all blocks on plane.
+     &  hstat_cal_eff,         !efficiency for a given block.
+     &  hstat_cal_effsum,      !efficiency over all counters on plane.
+     &  hstat_cal_slop,        !distance allowed from center of block.
+     &  hstat_cal_maxchisq     !maximum chisq allowed to use track for eff. calc.
+
+*
+*     CTPTYPE=event
+*
+      integer*4 hbothgood(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hposgood(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hneggood(hnum_scin_planes,hnum_scin_elements)
+
+      common/hscin_posneg_stats/
+     &   hbothgood,
+     &   hposgood,
+     &   hneggood
+*
+*     CTPTYPE=parm
+*
+      real*4 hdc_min_eff(hmax_num_dc_planes)   !''warning'' value for plane eff.
+*
+*     CTPTYPE=event
+*
+      integer*4 hdc_tot_events                 !total number of events examined
+      integer*4 hdc_events(hmax_num_dc_planes) !counter of times plane was hit
+      integer*4 hdc_cham_hits(hmax_num_chambers)
+      real*4 hdc_plane_eff(hmax_num_dc_planes) !effic=events(pln)/tot_events
+      real*4 hdc_cham_eff(hmax_num_chambers)
+
+      common/hdc_statistics/
+     &   hdc_tot_events,
+     &   hdc_events,
+     &   hdc_min_eff,
+     &   hdc_plane_eff,
+     &   hdc_cham_hits,
+     &   hdc_cham_eff
+
+
+* The logical variables just record if that particular event passed the test
+* for 'plane should have fired' and 'plane did fire'.  In CTP tests, we'll
+* apply additional cuts and check the efficiency.
+* 'Should' = event where other 3 hodoscope planes fired.
+* 'Did' = 'Should' && plane in question did fire.
+
+*
+*     CTPTYPE=event
+*
+      logical*4 htrig_hodoshouldflag(hnum_scin_planes)
+      logical*4 htrig_hododidflag(hnum_scin_planes)
+      common/htrig_hodostatistics/
+     &   htrig_hodoshouldflag,
+     &   htrig_hododidflag
+
+*
+*  Focal Plane Polarimeter variables (frw 2006/06/22)
+*
+*
+*     CTPTYPE=event
+*
+      real*4 HFPP_stat_dist2closest	! distance to closest hit wire
+      integer*4 HFPP_stat_shouldhit	! # of wire fitted track passed
+      logical*4 HFPP_stat_diddhit	! true if shouldhit was hit (w/ slop)
+
+*     * now the same again with sequential plane numbers for CTP
+      integer*4 HFPP_stat_planeshould
+      logical*4 HFPP_stat_planedidd
+
+      common/HMS_FPP_stats/
+     &   HFPP_stat_dist2closest(H_FPP_N_DCSETS,H_FPP_N_DCINSET,
+     >  			    H_FPP_N_DCLAYERS,H_FPP_MAX_TRACKS),
+     &   HFPP_stat_shouldhit(H_FPP_N_DCSETS,H_FPP_N_DCINSET,
+     >  		            H_FPP_N_DCLAYERS,H_FPP_MAX_TRACKS),
+     &   HFPP_stat_diddhit(H_FPP_N_DCSETS,H_FPP_N_DCINSET,
+     >  		          H_FPP_N_DCLAYERS,H_FPP_MAX_TRACKS),
+     &   HFPP_stat_planeshould(H_FPP_N_PLANES,H_FPP_MAX_TRACKS),
+     &   HFPP_stat_planedidd(H_FPP_N_PLANES,H_FPP_MAX_TRACKS)

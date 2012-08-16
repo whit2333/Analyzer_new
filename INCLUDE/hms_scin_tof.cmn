@@ -1,0 +1,165 @@
+* hms_scin_tof.cmn:   common block used by the subroutines that
+*       calculate the hms time of flight.
+* $Log: hms_scin_tof.cmn,v $
+* Revision 1.12.6.1.2.1  2008/11/17 15:57:00  cdaq
+* Removed old tof varaibles
+*
+* Revision 1.12.6.1  2007/10/24 16:37:21  cdaq
+* *** empty log message ***
+*
+* Revision 1.12.4.1  2007/05/02 21:16:08  jones
+* Add new internal arrays used  for adjusting scintillator timing using P Bosted's method.
+*
+* Revision 1.12  2005/03/15 21:14:28  jones
+* Add variables htof_tolerance and stof_tolerance to be used to filter the scintillator tdc hits and group them by time. ( P. Bosted)
+*
+*
+* Revision 1.11  1996/04/30 13:40:30  saw
+* (JRA) Add hbeta_p, hbeta_pcent
+*
+* Revision 1.10  1995/05/22 19:04:27  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+* Add some varaibles.
+*
+* Revision 1.9  1995/03/13  19:13:03  cdaq
+* (JRA) Change hscin_minph to hscin_???_minph arrays.  Add tracks index to
+*       hgood_tdc_pos, hgood_tdc_neg, hgood_scin_time, hgood_plane_time,
+*       and hgood_beta.
+*
+* Revision 1.8  1995/01/27  21:03:16  cdaq
+* (SAW) Add htof_debugging common
+*
+* Revision 1.7  1994/09/13  19:29:50  cdaq
+* (JRA) Add focal plane time
+*
+* Revision 1.6  1994/08/16  03:56:33  cdaq
+* (SAW) Change some variables to parm CTPTYPE
+*
+* Revision 1.5  1994/08/05  15:29:44  cdaq
+* (SAW) Add makereg directive with required include files
+*
+* Revision 1.4  1994/08/04  18:02:13  cdaq
+* (SAW) Add "CTPTYPE=event" directive for auto generation of CTP reg calls
+*
+* Revision 1.3  1994/07/08  19:27:12  cdaq
+* (JRA) Add hscin_on_track table
+*
+* Revision 1.2  1994/05/13  02:51:53  cdaq
+* (DFG) Remove parameter statements.  More are CTP variables
+*
+* Revision 1.1  1994/04/13  18:06:20  cdaq
+* Initial revision
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'hms_data_structures.cmn'
+*%%   include 'hms_scin_parms.cmn'
+*
+*     CTPTYPE=event
+*
+      integer*4 hntof
+
+      real*4 hscin_long_coord(hmax_scin_hits)
+      real*4 hscin_trans_coord(hmax_scin_hits)
+      real*4 hscin_pos_coord(hmax_scin_hits)
+      real*4 hscin_neg_coord(hmax_scin_hits)
+      real*4 hscin_pos_sigma(hmax_scin_hits)
+      real*4 hscin_neg_sigma(hmax_scin_hits)
+      real*4 hscin_pos_time(hmax_scin_hits)
+      real*4 hscin_neg_time(hmax_scin_hits)
+      real*4 hscin_sigma(hmax_scin_hits)
+      real*4 hscin_time(hmax_scin_hits)
+      real*4 hscin_time_fp(hmax_scin_hits)
+      real*4 hscin_pos_invadc_offset(hmax_scin_hits)
+      real*4 hscin_neg_invadc_offset(hmax_scin_hits)
+      real*4 hscin_pos_invadc_linear(hmax_scin_hits)
+      real*4 hscin_neg_invadc_linear(hmax_scin_hits)
+      real*4 hscin_pos_invadc_adc(hmax_scin_hits)
+      real*4 hscin_neg_invadc_adc(hmax_scin_hits)
+
+*
+*     CTPTYPE=parm
+*
+      real*4 hscin_tdc_min
+      real*4 hscin_tdc_max
+      real*4 hscin_tdc_to_time
+      real*4 hstart_time_center    ! center of time window on scin. hits
+      real*4 hstart_time_slop      ! 1/2 width of time window on scin. hits
+      real*4 htof_tolerance        ! tolerance for tof window in nsec
+*
+*     CTPTYPE=event
+*
+      logical*4 hgood_tdc_pos(hntracks_max,hmax_scin_hits)
+      logical*4 hgood_tdc_neg(hntracks_max,hmax_scin_hits)
+      logical*4 hgood_scin_time(hntracks_max,hmax_scin_hits)
+      logical*4 hgood_plane_time(hntracks_max,hnum_scin_planes)
+      logical*4 hgood_beta(hntracks_max)
+      logical*4 hscin_on_track(hntracks_max,hmax_scin_hits)
+
+      common/hms_scin_tof/
+     &     hntof,
+     &     hscin_long_coord,
+     &     hscin_trans_coord,
+     &     hscin_pos_coord,hscin_neg_coord, !position of tubes
+     &     hscin_pos_sigma,hscin_neg_sigma, !time resolution for tubes
+     &     hscin_pos_time, hscin_neg_time, !time for 'pos' and 'neg' tubes.
+     &     hscin_sigma,                 !time resolution for scin.
+     &     hscin_time,                  !time for scin. (ave of tubes)
+     &     hscin_tdc_min,
+     &     hscin_tdc_max,
+     &     hscin_tdc_to_time,
+     &     hgood_tdc_pos, hgood_tdc_neg, !did pos/neg tube had good tdc?
+     &     hgood_scin_time,             !was a time found for the hit?
+     &     hgood_plane_time,            !was a time found for the plane?
+     &     hgood_beta,                  !was a value of beta found?
+     &     hscin_on_track,              !list of scins on each track.
+     &     hscin_time_fp,               !scin time (ave) projected to fp
+     &     hstart_time_center,
+     &     hstart_time_slop,
+     &     htof_tolerance,
+     >     hscin_pos_invadc_offset,
+     >     hscin_neg_invadc_offset,
+     >     hscin_pos_invadc_linear,
+     >     hscin_neg_invadc_linear,
+     >     hscin_pos_invadc_adc,
+     >     hscin_neg_invadc_adc
+
+*
+*     CTPTYPE=event
+*
+      real*4 h_fptime(hnum_scin_planes)    !time at fp from all hits in 1 plane
+      real*4 h_fptimedif(6)                !fp time differences
+      real*4 hbeta_notrk
+      real*4 hbeta_chisq_notrk
+      real*4 hbeta_p                       !beta from mass and momentum
+      real*4 hbeta_pcent                   !beta for central momentum
+
+      common/htof_notrk/
+     &  h_fptime,
+     &  h_fptimedif,
+     &  hbeta_notrk,
+     &  hbeta_chisq_notrk,
+     &  hbeta_p,
+     &  hbeta_pcent
+
+c      integer*4 hscin_pos_did(hnum_scin_planes,hnum_scin_elements)
+c      integer*4 hscin_neg_did(hnum_scin_planes,hnum_scin_elements)
+c      integer*4 hscin_pos_should(hnum_scin_planes,hnum_scin_elements)
+c      integer*4 hscin_neg_should(hnum_scin_planes,hnum_scin_elements)
+c      real*4 hscin_pos_eff(hnum_scin_planes,hnum_scin_elements)
+c      real*4 hscin_neg_eff(hnum_scin_planes,hnum_scin_elements)
+c      real*4 hscin_pos_solo(hnum_scin_planes,hnum_scin_elements)
+c      real*4 hscin_neg_solo(hnum_scin_planes,hnum_scin_elements)
+c
+c      common/hmore_debugging/
+c     &  hscin_pos_eff,
+c     &  hscin_neg_eff,
+c     &  hscin_pos_solo,
+c     &  hscin_neg_solo,
+c     &  hscin_pos_did,
+c     &  hscin_neg_did,
+c     &  hscin_pos_should,
+c     &  hscin_neg_should

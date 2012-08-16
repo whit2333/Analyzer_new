@@ -1,0 +1,222 @@
+*    This include file contains all the variables required for s_physics
+* $Log: sos_physics_sing.cmn,v $
+* Revision 1.11  2005/03/23 16:35:04  jones
+* Add new code s_select_best_track_prune.f and h_select_best_track_prune.f (P Bosted)
+*
+* Revision 1.10  2005/03/23 16:16:28  jones
+* Add variable ssel_using_scin . Set ssel_using_scin = 1 in param files and new code
+* used to select best track for SOS.
+*
+* Revision 1.9  2003/09/08 21:03:18  jones
+* Change s_phicentral_offset to s_oopcentral_offset (mkj)
+*
+* Revision 1.8  2002/09/24 20:29:37  jones
+*     add parameters sphicentral_offset, spcentral_offset,
+*       sthetacentral_offset
+*
+* Revision 1.7  1999/02/23 19:21:59  csa
+* Add some physics vars
+*
+* Revision 1.6  1996/09/04 16:30:39  saw
+* (JRA,DD) Add some egamma variables and some angle/momentum offset
+*          variables
+*
+* Revision 1.5  1996/04/30 14:03:28  saw
+* (JRA) Add path length, rf, and photodisintigration variables
+*
+* Revision 1.4  1995/09/01 13:03:47  cdaq
+* (JRA) Add cerenkov position variables
+*
+* Revision 1.3  1995/03/13  19:17:02  cdaq
+* (SAW) Bring up to date with hms_physics_sing.cmn
+*
+* Revision 1.2  1994/08/05  20:44:48  cdaq
+* (SAW) Add "CTPTYPE=event,parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.1  1994/06/14  03:25:37  cdaq
+* Initial revision
+*
+*     CTPTYPE=event
+*
+*     Event varaibles to calculate
+      REAL*4 SSELAS_COR                 ! Difference between momentum measured
+                                        ! by tracking and elastic kinematics
+      COMMON/SOS_PHYSICS_SING/
+     &     SSELAS_COR
+*
+*     CTPTYPE=parm
+*
+*     initializiation paramters
+      REAL*4  SPHYSICSA                 !   Coefficients of p3 in elastic cal
+      REAL*4  SPHYSICSB                 !
+      REAL*4  SPHYSICAB2                !
+      REAL*4  SPHYSICSM3B               !
+      REAL*4  COSSTHETAS                !   COS(STHETA_LAB)
+      REAL*4  SINSTHETAS                !   SIN(STHETA_LAB)
+      COMMON/SOS_PHYSICS_PARAM_R4/
+     &     SPHYSICSA,
+     &     SPHYSICSB,
+     &     SPHYSICAB2,
+     &     SPHYSICSM3B,
+     &     COSSTHETAS,
+     &     SINSTHETAS
+*     
+*     Parameters that select the best track. Note these should be
+*     loose cuts to make sure we select one track. The final 
+*     tighter cuts should be made with tests.
+      REAL*4 ssel_chi2_fpperdegmax      ! Maximun chi2 per degree of freedom
+                                        ! at the focal plane
+      REAL*4 ssel_dedx1min              ! Minimum dedx in chamber 1
+      REAL*4 ssel_dedx1max              ! Maximum dedx in chamber 1
+      REAL*4 ssel_betamin               ! Minimum beta 
+      REAL*4 ssel_betamax               ! Maximum beta
+      REAL*4 ssel_etmin                 ! Minimum track et
+      REAL*4 ssel_etmax                 ! Maximum track et
+      INTEGER*4 ssel_ndegreesmin        ! Minimum number of degrees of freedom
+! following parameters are only used if pruning is selected
+! see the code h_select_best_track_prune.f for meaning
+! Note: all these limits are for abs(quantity) except df, chibeta
+      real*4 sprune_xp                  ! Maximum xp angle in radians
+      real*4 sprune_yp 	                ! maximum yp angle in radianss
+      real*4 sprune_ytar                ! maximum ytar in cm
+      real*4 sprune_delta               ! Maximum delta in percent
+      real*4 sprune_beta                ! Maximum beta-1
+      integer sprune_df                  ! Minimum d.f. for track
+      real*4 sprune_chibeta             ! Maximum beta chisq
+      real*4 sprune_fptime              ! Maximum fptime - nominal
+      integer sprune_npmt               ! Minimum PMTs for track
+
+       INTEGER*4 ssel_using_scin       ! =1 select best track using scin info
+                                      ! = 0 select best track suing just chi2
+      INTEGER*4 ssel_using_prune      ! =1 select best track using new 
+                                      !    routine and prune values 
+                                      ! = 0 then using_scin applies
+*     
+      COMMON/sos_chose_one_track_r4/
+     &     ssel_chi2_fpperdegmax,
+     &     ssel_dedx1min,
+     &     ssel_dedx1max,
+     &     ssel_betamin,
+     &     ssel_betamax,
+     &     ssel_etmin,
+     &     ssel_etmax,
+     &     sprune_xp,
+     &     sprune_yp,
+     &     sprune_ytar,
+     &     sprune_delta,
+     &     sprune_beta,
+     &     sprune_df,
+     &     sprune_chibeta,
+     &     sprune_npmt,
+     &     sprune_fptime
+*
+      COMMON/sos_chose_one_track_i4/
+     &     ssel_ndegreesmin,
+     &     ssel_using_scin,
+     &     ssel_using_prune
+
+*
+*     CTPTYPE=event
+*
+      real*4 ssx_dc1, ssy_dc1
+      real*4 ssx_dc2, ssy_dc2
+      real*4 ssx_s1, ssy_s1
+      real*4 ssx_cer, ssy_cer
+      real*4 ssx_s2, ssy_s2
+      real*4 ssx_cal, ssy_cal
+      integer*4 ssscin_elem_hit(4)
+
+      COMMON/sos_tmp_stuff/
+     &     ssx_dc1, ssy_dc1,
+     &     ssx_dc2, ssy_dc2,
+     &     ssx_s1, ssy_s1,
+     &     ssx_cer, ssy_cer,
+     &     ssx_s2, ssy_s2,
+     &     ssx_cal, ssy_cal,
+     &     ssscin_elem_hit
+
+*
+*     CTPTYPE=parm
+*
+      real*4 spathlength_central
+*
+*     CTPTYPE=event
+*
+      real*4 ssbeta_p
+      real*4 sspathlength
+      real*4 sspath_cor
+      real*4 ssrftime
+
+      COMMON/sos_timing_stuff/
+     &     spathlength_central,
+     &     ssbeta_p,
+     &     sspathlength,
+     &     sspath_cor,
+     &     ssrftime
+*
+*     CTPTYPE=event
+*
+      real*4 sqx,sqy,sqz,sqabs
+      real*4 sinvmass
+
+      common/sos_physics_quantaties/
+     &    sqx,sqy,sqz,sqabs,
+     &    sinvmass
+
+
+c------------------------------------------------------------------
+c     For photodisintegration calculations.
+c     M.Miller, NPL UIUC, 10-Sept-1995, miller5@uiuc.edu
+*
+*     CTPTYPE=parm
+*
+      real*4 sphoto_mtarget    ! Mass of target [Gev/c^2]
+      real*4 sphoto_mrecoil    ! Mass of recoil system [Gev/c^2]
+*
+*     CTPTYPE=event
+*
+      real*4 ssegamma
+      real*4 ssegamma_p
+
+      common /sos_photo_param/
+     &     sphoto_mtarget,
+     &     sphoto_mrecoil,
+     &     ssegamma,
+     &     ssegamma_p
+
+*
+*     CTPTYPE=parm
+*
+c D.Dutta, 24th-Apr-1996
+
+      real*4 sdelta_offset     ! hms delta offset
+      real*4 stheta_offset     ! hms scatteringangel offset
+      real*4 sphi_offset
+      real*4 smomentum_factor    ! multiplier for the hms momentum
+c    J.Volmer, 9th-Jul-1999
+      real*4 spcentral_offset  ! sos central momentum offset
+      real*4 sthetacentral_offset ! sos central angle offset
+      real*4 s_oopcentral_offset   ! sos central oop angle offset
+
+      COMMON /sos_offsets/
+     &     sdelta_offset,
+     &     stheta_offset,
+     &     sphi_offset,
+     &     smomentum_factor,
+     &     spcentral_offset,
+     &     sthetacentral_offset,
+     &     s_oopcentral_offset
+
+*
+*     CTPTYPE=event
+*
+      real*4 ss_qvec(4)   
+      real*4 ss_kpvec(4) 
+      real*4 ss_kvec(4)  
+      real*4 ss_tvec(4)
+
+      COMMON/ss_vectors/
+     &     ss_qvec,
+     &     ss_kpvec,
+     &     ss_kvec,
+     &     ss_tvec

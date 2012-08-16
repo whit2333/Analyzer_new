@@ -1,0 +1,223 @@
+*_______________________________________________________________________
+*      hms_id_histid.cmn
+*
+*      This common block contains the HBOOK histogram id numbers
+*      for all hms particle id histograms in which direct hfill 
+*      calls are made.
+*
+*      It also contains the paramter flags to turn on and off histograming
+*      of each of the hard coded blocks.
+*
+*      Created 9 April 1994	D. F. Geesaman
+*
+* $Log: hms_id_histid.cmn,v $
+* Revision 1.13.24.3  2007/10/30 00:28:32  cdaq
+* added FPP geometric alignment checks
+*
+* Revision 1.13.24.2  2007/10/22 18:39:10  cdaq
+* adjusted HMS FPP histos
+*
+* Revision 1.13.24.1  2007/08/22 19:09:31  frw
+* added FPP
+*
+*
+* Revision 1.15  2006/06/22 frw
+* added FPP hids
+*
+* Revision 1.14  2002/12/20 21:52:33  jones
+* Modified by Hamlet for new HMS aerogel
+*
+* Revision 1.13  2002/10/08 (Hamlet)
+* Add HMS Aerogel histograms
+*
+* Revision 1.12  1999/02/23 19:10:42  csa
+* (JRA) Add hidscindpos_pid, cleanup
+*
+* Revision 1.11  1999/02/03 21:13:34  saw
+* Code for new Shower counter tubes
+*
+* Revision 1.10  1996/09/04 15:51:24  saw
+* Add hidmisctdcs
+*
+* Revision 1.9  1996/01/17 16:01:00  cdaq
+* (JRA) Add hidscintimes histogram
+*
+* Revision 1.8  1995/09/01 13:02:31  cdaq
+* (JRA) Add dpos histid's
+*
+* Revision 1.7  1995/08/11  16:30:58  cdaq
+* (JRA) Add dpos (track pos - hit pos) histograms
+*
+* Revision 1.6  1995/07/28  14:26:52  cdaq
+* (JRA) Add hidsum histogram id holders
+*
+* Revision 1.5  1995/05/22  19:07:28  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+*
+* Revision 1.4  1995/05/12  12:23:39  cdaq
+* (JRA) Modify/add user histograms
+*
+* Revision 1.3  1994/08/05  15:41:18  cdaq
+* (SAW) Add makereg directive with required include files
+*
+* Revision 1.2  1994/08/04  20:51:58  cdaq
+* (SAW) Add "CTPTYPE=parm" directive for auto generation of CTP reg calls
+*
+* Revision 1.1  1994/04/12  21:11:59  cdaq
+* Initial revision
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'hms_data_structures.cmn'
+*%%   include 'hms_scin_parms.cmn'
+*
+*     The following don't need to be registered??
+*     CTPTYPE=parm
+      integer*4 hidscinrawtothits
+      integer*4 hidscinplane
+      integer*4 hidscinallpostdc(HNUM_SCIN_PLANES)
+      integer*4 hidscinallnegtdc(HNUM_SCIN_PLANES)
+      integer*4 hidscinallposadc(HNUM_SCIN_PLANES)
+      integer*4 hidscinallnegadc(HNUM_SCIN_PLANES) 
+      integer*4 hidscincounters(HNUM_SCIN_PLANES)
+      integer*4 hidscinposadc(HNUM_SCIN_PLANES,hnum_scin_elements)
+      integer*4 hidscinnegadc(HNUM_SCIN_PLANES,hnum_scin_elements)
+      integer*4 hidscinpostdc(HNUM_SCIN_PLANES,hnum_scin_elements)
+      integer*4 hidscinnegtdc(HNUM_SCIN_PLANES,hnum_scin_elements)
+      integer*4 hidscinalltimes
+      integer*4 hidscindpos(HNUM_SCIN_PLANES)
+      integer*4 hidscindpos_pid(HNUM_SCIN_PLANES)
+      integer*4 hidsumposadc(HNUM_SCIN_PLANES)
+      integer*4 hidsumnegadc(HNUM_SCIN_PLANES)
+      integer*4 hidsumpostdc(HNUM_SCIN_PLANES)
+      integer*4 hidsumnegtdc(HNUM_SCIN_PLANES)
+      integer*4 hidscintimes
+
+      integer*4 hidcalplane
+      integer*4 hidcalhits(HMAX_CAL_COLUMNS)
+      integer*4 hidcalposhits(HMAX_CAL_COLUMNS)
+      integer*4 hidcalneghits(HMAX_CAL_COLUMNS)
+      integer*4 hidcalsumadc
+      integer*4 hidcaldpos
+      integer*4 hiddcdposx,hiddcdposy,hiddcdposxp,hiddcdposyp
+      integer*4 hidmisctdcs
+*
+      integer*4 hidhaero_adc_pos_hits
+      integer*4 hidhaero_adc_neg_hits
+
+      integer*4 hidhaero_adc_pos_pedsubtr
+      integer*4 hidhaero_adc_neg_pedsubtr
+
+      integer*4 hidhaero_tdc_pos_hits
+      integer*4 hidhaero_tdc_neg_hits
+
+c
+      common/hms_id_histid/
+     &     hidscinrawtothits,
+     &     hidscinplane,
+     &     hidscinallpostdc,
+     &     hidscinallnegtdc,
+     &     hidscinallposadc,
+     &     hidscinallnegadc,
+     &     hidscincounters,
+     &     hidscinposadc,
+     &     hidscinnegadc,
+     &     hidscinpostdc,
+     &     hidscinnegtdc,
+     &     hidscinalltimes,
+     &     hidscintimes,
+     &     hidsumposadc,
+     &     hidsumnegadc,
+     &     hidsumpostdc,
+     &     hidsumnegtdc,
+     &     hidscindpos,
+     &     hidcalplane,
+     &     hidcalhits,
+     &     hidcalsumadc,
+     &     hidcalposhits,
+     &     hidcalneghits,
+     &     hidcaldpos,
+     &     hiddcdposx,hiddcdposy,hiddcdposxp,hiddcdposyp,
+     &     hidmisctdcs,
+     &     hidscindpos_pid,
+     &     hidhaero_adc_pos_pedsubtr,hidhaero_adc_neg_pedsubtr,
+     &     hidhaero_adc_pos_hits,hidhaero_adc_neg_hits,
+     &     hidhaero_tdc_pos_hits,hidhaero_tdc_neg_hits
+
+
+      integer*4 hidFPP_tdc(H_FPP_N_PLANES)
+      integer*4 hidFPP_tdcROC
+      integer*4 hidFPP_alltimes(H_FPP_N_PLANES)
+      integer*4 hidFPP_planetime(H_FPP_N_PLANES)
+      integer*4 hidFPP_rate1(H_FPP_N_PLANES)
+      integer*4 hidFPP_time1(H_FPP_N_PLANES)
+      integer*4 hidFPP_time12(H_FPP_N_PLANES)
+      integer*4 hidFPP_driftT(H_FPP_N_DCSETS,H_FPP_N_DCINSET,H_FPP_N_DCLAYERS)
+      integer*4 hidFPP_driftX(H_FPP_N_DCSETS,H_FPP_N_DCINSET,H_FPP_N_DCLAYERS)
+      integer*4 hidFPP_should(H_FPP_N_DCSETS,H_FPP_N_DCINSET,H_FPP_N_DCLAYERS)
+      integer*4 hidFPP_did(H_FPP_N_DCSETS,H_FPP_N_DCINSET,H_FPP_N_DCLAYERS)
+      integer*4 hidFPP_dist(H_FPP_N_DCSETS)
+      integer*4 hidFPP_rawinclust(H_FPP_N_PLANES)
+      integer*4 hidFPP_trk_chi2(H_FPP_N_DCSETS)
+      integer*4 hidFPP_trk_mx(H_FPP_N_DCSETS)
+      integer*4 hidFPP_trk_bx(H_FPP_N_DCSETS)
+      integer*4 hidFPP_trk_my(H_FPP_N_DCSETS)
+      integer*4 hidFPP_trk_by(H_FPP_N_DCSETS)
+      integer*4 hidFPP_Ntrk(H_FPP_N_DCSETS)
+      integer*4 hidFPP_Nhitontrk(H_FPP_N_DCSETS)
+      integer*4 hidFPP_Nrawontrk(H_FPP_N_DCSETS)
+      integer*4 hidFPP_trkrough(H_FPP_N_DCSETS,6)
+      integer*4 hidFPP_fine_mx(H_FPP_N_DCSETS)
+      integer*4 hidFPP_fine_bx(H_FPP_N_DCSETS)
+      integer*4 hidFPP_fine_my(H_FPP_N_DCSETS)
+      integer*4 hidFPP_fine_by(H_FPP_N_DCSETS)
+
+      integer*4 hidFPP_NickEff(H_FPP_N_DCSETS)
+
+      integer*4 hidFPP_sclose(H_FPP_N_DCSETS)
+      integer*4 hidFPP_zclose(H_FPP_N_DCSETS)
+      integer*4 hidFPP_thetapol(H_FPP_N_DCSETS)
+      integer*4 hidFPP_phipol(H_FPP_N_DCSETS)
+
+      integer*4 hidFPP_resol_lin(H_FPP_N_DCSETS)
+      integer*4 hidFPP_resol_ang(H_FPP_N_DCSETS)
+
+      integer*4 hid_HMSwire(H_FPP_N_DCSETS,H_FPP_N_DCINSET,H_FPP_N_DCLAYERS)
+
+      integer*4 hid_rawROC(0:15)
+      
+c
+      common/hms_fpp_histid/
+     &     hidFPP_tdc,
+     &     hidFPP_rate1, hidFPP_planetime,
+     &     hidFPP_alltimes, hidFPP_time1, hidFPP_time12,
+     &     hidFPP_driftT, hidFPP_driftX,
+     &     hidFPP_should, hidFPP_did,
+     &     hidFPP_dist,
+     &     hidFPP_rawinclust,
+     &     hidFPP_trk_chi2,
+     &     hidFPP_trk_mx, hidFPP_trk_bx,
+     &     hidFPP_trk_my, hidFPP_trk_by,
+     &     hidFPP_Ntrk,
+     &     hidFPP_Nhitontrk,
+     &     hidFPP_Nrawontrk,
+     &     hidFPP_trkrough,
+     &     hidFPP_fine_mx, hidFPP_fine_my,
+     &     hidFPP_fine_bx, hidFPP_fine_by,
+     &     hidFPP_resol_lin, hidFPP_resol_ang,
+     &     hidFPP_tdcROC,
+     &     hidFPP_NickEff,
+     &     hidFPP_sclose, hidFPP_zclose,
+     &     hidFPP_thetapol, hidFPP_phipol,
+     &     hid_rawROC,hid_HMSwire
+*
+*     CTPTYPE=parm
+*
+*      flags to turn on (.eq.1) or off (.eq. 0) hard coded histograms
+       integer*4 hturnon_scin_raw_hist
+*
+       common/hms_id_hist_flags/
+     &      hturnon_scin_raw_hist

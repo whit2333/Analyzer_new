@@ -1,0 +1,298 @@
+* hms_pedestals.cmn -  counters used for calculating pedestals from the set
+*                      of pedestal events at the beginning of each run.
+
+*
+
+* $Log: hms_pedestals.cmn,v $
+* Revision 1.7  2003/09/05 20:32:28  jones
+* Merge in online03 changes (mkj)
+*
+* Revision 1.6.2.1  2003/04/06 06:19:41  cdaq
+* updated variables for haero
+*
+* Revision 1.6  2002/12/20 21:52:32  jones
+* Modified by Hamlet for new HMS aerogel
+*
+* Revision 1.6  2002/09/26
+* (Hamlet) Add Aerogel pedestals
+*
+* Revision 1.5  1999/02/23 19:16:02  csa
+* (JRA) Add vars for improved pedestal calcs
+*
+* Revision 1.4  1998/12/17 22:02:41  saw
+* Support extra set of tubes on HMS shower counter
+*
+* Revision 1.3  1996/01/17 16:03:04  cdaq
+* (JRA) Add "_new_" pedestal variables
+*
+* Revision 1.2  1995/06/27 15:58:12  cdaq
+* (JRA) Add hhodo_all_sig_pos
+*
+* Revision 1.1  1995/05/26  16:14:28  cdaq
+* Initial revision
+*
+* Revision 1.2  1995/05/22  19:08:49  cdaq
+* (SAW) Split gen_data_data_structures into gen, hms, sos, and coin parts
+* Fix conflicting common block names.  Add Cerenkov pedestals
+*
+* Revision 1.1  1995/04/06  20:17:19  cdaq
+* Initial revision
+*
+*
+*     The following include statments must precede the inclusion of this
+*     file in each routine that uses it.  The *%% syntax is also a
+*     directive to makereg to tell it to include the code in the program
+*     that it generates.
+*
+*%%   include 'hms_data_structures.cmn'
+*
+*     CTPTYPE=event
+*
+*
+* HODOSCOPE PEDESTALS
+* replace hscin_all_ped_pos with float(hhodo_pos_ped_sum/hhodo_pos_ped_num)
+* if hhodo_pos_ped_num > hhodo_min_peds.
+*
+      integer*4 hhodo_pos_ped_sum2(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_neg_ped_sum2(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_pos_ped_sum(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_neg_ped_sum(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_pos_ped_num(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_neg_ped_num(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_num_ped_changes
+      integer*4 hhodo_changed_plane(2*hnum_scin_planes*hnum_scin_elements)
+      integer*4 hhodo_changed_element(2*hnum_scin_planes*hnum_scin_elements)
+      integer*4 hhodo_changed_sign(2*hnum_scin_planes*hnum_scin_elements)
+      real*4 hhodo_ped_change(2*hnum_scin_planes*hnum_scin_elements)
+      real*4 hhodo_new_sig_pos(hnum_scin_planes,hnum_scin_elements)
+      real*4 hhodo_new_sig_neg(hnum_scin_planes,hnum_scin_elements)
+      real*4 hhodo_new_ped_pos(hnum_scin_planes,hnum_scin_elements)
+      real*4 hhodo_new_ped_neg(hnum_scin_planes,hnum_scin_elements)
+*
+*     CTPTYPE=parm
+*
+      integer*4 hhodo_min_peds
+      integer*4 hhodo_pos_ped_limit(hnum_scin_planes,hnum_scin_elements)
+      integer*4 hhodo_neg_ped_limit(hnum_scin_planes,hnum_scin_elements)
+*
+      common/hms_scin_pedestals/
+     &   hhodo_pos_ped_sum2,  !sum of squares
+     &   hhodo_neg_ped_sum2,  !sum of squares
+     &   hhodo_pos_ped_sum,   !sum of peds
+     &   hhodo_neg_ped_sum,   !sum of peds
+     &   hhodo_pos_ped_num,   !number of peds
+     &   hhodo_neg_ped_num,   !number of peds
+     &   hhodo_pos_ped_limit,   !max. allowed ped (reject hits during ped trig)
+     &   hhodo_neg_ped_limit,   !max. allowed ped
+     &   hhodo_min_peds,      !# of peds required to override default pedestals
+     &   hhodo_new_sig_pos,
+     &   hhodo_new_sig_neg,
+     &   hhodo_new_ped_pos,
+     &   hhodo_new_ped_neg,
+     &   hhodo_num_ped_changes, !# of peds with 2 sigma change from param file
+     &   hhodo_changed_plane,
+     &   hhodo_changed_element,
+     &   hhodo_changed_sign,    !1=pos,2=neg
+     &   hhodo_ped_change
+*
+*
+* CALORIMETER PEDESTALS
+* replace hcal_ped_mean with float(hcal_ped_sum/hcal_ped_num),
+*         hcal_ped_rms  with (appropriate formula),
+*    and  hcal_threshold with (something like) min(10.,3.*hcal_ped_rms)
+* if hcal_num > hcal_min_peds.
+*
+*
+*     CTPTYPE=event
+*
+      integer*4 hcal_pos_ped_sum2(hmax_cal_blocks)
+      integer*4 hcal_neg_ped_sum2(hmax_cal_blocks)
+      integer*4 hcal_pos_ped_sum(hmax_cal_blocks)
+      integer*4 hcal_neg_ped_sum(hmax_cal_blocks)
+      integer*4 hcal_pos_ped_num(hmax_cal_blocks)
+      integer*4 hcal_neg_ped_num(hmax_cal_blocks)
+
+      integer*4 hcal_num_ped_changes
+      integer*4 hcal_changed_block(2*hmax_cal_blocks)
+      integer*4 hcal_changed_sign(2*hmax_cal_blocks) ! Which end?
+      real*4 hcal_ped_change(2*hmax_cal_blocks)
+
+      real*4 hcal_new_ped_pos(2*hmax_cal_blocks)
+      real*4 hcal_new_ped_neg(2*hmax_cal_blocks)
+      real*4 hcal_new_rms_pos(2*hmax_cal_blocks)
+      real*4 hcal_new_rms_neg(2*hmax_cal_blocks)
+*
+*     CTPTYPE=parm
+*
+      integer*4 hcal_min_peds
+      integer*4 hcal_pos_ped_limit(hmax_cal_blocks)
+      integer*4 hcal_neg_ped_limit(hmax_cal_blocks)
+*
+      common/hms_cal_ped_stats/
+     &   hcal_pos_ped_sum2,       !sum of squares
+     &   hcal_neg_ped_sum2,       !sum of squares
+     &   hcal_pos_ped_sum,        !sum of peds
+     &   hcal_neg_ped_sum,        !sum of peds
+     &   hcal_pos_ped_num,        !number of peds
+     &   hcal_neg_ped_num,        !number of peds
+     &   hcal_pos_ped_limit,      !max. allowed ped (reject hits during ped trig)
+     &   hcal_neg_ped_limit,      !max. allowed ped
+     &   hcal_min_peds,       !# of peds required to override default pedestals
+     &   hcal_new_ped_pos,        !(new) calculated pedestals.
+     &   hcal_new_ped_neg,        !(new) calculated pedestals.
+     &   hcal_new_rms_pos,        !(new) calculated rms.
+     &   hcal_new_rms_neg,        !(new) calculated rms.
+     &   hcal_num_ped_changes,!# of peds with 2 sigma changes from param file
+     &   hcal_changed_block,
+     &   hcal_changed_sign,    ! 1=pos, 2=neg
+     &   hcal_ped_change
+*
+* CERENKOV PEDESTALS
+* replace hcer_ped with float(hcer_ped_sum/hcer_ped_num),
+*         hcer_ped_rms  with (appropriate formula),
+*
+*
+*     CTPTYPE=event
+*
+      integer*4 hcer_ped_sum2(hmax_cer_hits)
+      integer*4 hcer_ped_sum(hmax_cer_hits)
+      integer*4 hcer_ped_num(hmax_cer_hits)
+      integer*4 hcer_num_ped_changes
+      integer*4 hcer_changed_tube(hmax_cer_hits)
+      real*4 hcer_ped_change(hmax_cer_hits)
+      real*4 hcer_ped_mean(hmax_cer_hits)
+      real*4 hcer_ped_rms(hmax_cer_hits)
+      real*4 hcer_new_ped(hmax_cer_hits)
+      real*4 hcer_new_rms(hmax_cer_hits)
+*
+*     CTPTYPE=parm
+*
+      integer*4 hcer_min_peds
+      integer*4 hcer_ped_limit(hmax_cer_hits)
+*
+      common/hms_cer_pedestals/
+     &   hcer_ped_sum2,       !sum of squares
+     &   hcer_ped_sum,        !sum of peds
+     &   hcer_ped_num,        !number of peds
+     &   hcer_ped_limit,      !max. allowed ped (reject hits during ped trig)
+     &   hcer_min_peds,       !# of peds required to override default pedestals
+     &   hcer_ped_mean,
+     &   hcer_ped_rms,
+     &   hcer_new_ped,
+     &   hcer_new_rms,
+     &   hcer_num_ped_changes,!# of peds with 2 sigma changes from param file
+     &   hcer_changed_tube,   !list of changed tubes
+     &   hcer_ped_change      !change in pedestal
+
+*.........................................................................
+* cp from sos lucite (hamlet)
+*
+*
+* AEROGEL CERENKOV PEDESTALS
+*
+*     CTPTYPE=event
+*
+      integer*4 haero_pos_ped_sum2(hmax_aero_hits)
+      integer*4 haero_neg_ped_sum2(hmax_aero_hits)
+      integer*4 haero_pos_ped_sum(hmax_aero_hits)
+      integer*4 haero_neg_ped_sum(hmax_aero_hits)
+      integer*4 haero_pos_ped_num(hmax_aero_hits)
+      integer*4 haero_neg_ped_num(hmax_aero_hits)
+*
+*     CTPTYPE=parm
+*
+      integer*4 haero_min_peds
+      real*4 haero_new_ped_pos(hmax_aero_hits)
+      real*4 haero_new_ped_neg(hmax_aero_hits)
+      real*4 haero_new_rms_pos(hmax_aero_hits)
+      real*4 haero_new_rms_neg(hmax_aero_hits)
+
+      real*4 haero_pos_ped_mean(hmax_aero_hits)
+      real*4 haero_neg_ped_mean(hmax_aero_hits)
+      real*4 haero_pos_ped_rms(hmax_aero_hits)
+      real*4 haero_neg_ped_rms(hmax_aero_hits)
+
+      integer*4 haero_pos_ped_limit(hmax_aero_hits)
+      integer*4 haero_neg_ped_limit(hmax_aero_hits)
+
+      common/hms_aeroi_pedestals/
+     &   haero_pos_ped_sum2,       !sum of squares
+     &   haero_neg_ped_sum2,       !sum of squares
+     &   haero_pos_ped_sum,        !sum of peds
+     &   haero_neg_ped_sum,        !sum of peds
+     &   haero_pos_ped_num,        !number of peds
+     &   haero_neg_ped_num,        !number of peds
+     &   haero_pos_ped_limit,      !max. allowed ped 
+     &   haero_neg_ped_limit,      !max. allowed ped
+     &   haero_min_peds,           !# of peds required to override default pedestals
+     &   haero_pos_ped_mean,       !calculated pedestal value
+     &   haero_neg_ped_mean,
+     &   haero_pos_ped_rms,        !calculated pedestal width
+     &   haero_neg_ped_rms,
+     &   haero_new_ped_pos,
+     &	 haero_new_ped_neg,
+     &	 haero_new_rms_pos,
+     &	 haero_new_rms_neg
+*
+*.........................................................................
+*
+* MISC. PEDESTALS
+*
+*
+*     CTPTYPE=event
+*
+      integer*4 hmisc_ped_sum2(hmax_misc_hits)
+      integer*4 hmisc_ped_sum(hmax_misc_hits)
+      integer*4 hmisc_ped_num(hmax_misc_hits)
+      integer*4 hmisc_num_ped_changes
+      integer*4 hmisc_changed_tube(hmax_misc_hits)
+*
+      real*4 hmisc_ped(hmax_misc_hits)
+      real*4 hmisc_ped_change(hmax_misc_hits)
+      real*4 hmisc_ped_mean(hmax_misc_hits)
+      real*4 hmisc_ped_rms(hmax_misc_hits)
+      real*4 hmisc_new_ped(hmax_misc_hits)
+      real*4 hmisc_new_rms(hmax_misc_hits)
+*
+*     CTPTYPE=parm
+*
+      integer*4 hmisc_min_peds
+      integer*4 hmisc_ped_limit(hmax_misc_hits)
+*
+      common/hms_misc_pedestals/
+     &   hmisc_ped,
+     &   hmisc_ped_sum2,       !sum of squares
+     &   hmisc_ped_sum,        !sum of peds
+     &   hmisc_ped_num,        !number of peds
+     &   hmisc_ped_limit,      !max. allowed ped (reject hits during ped trig)
+     &   hmisc_min_peds,       !# of peds required to override default pedestals
+     &   hmisc_ped_mean,
+     &   hmisc_ped_rms,
+     &   hmisc_new_ped,
+     &   hmisc_new_rms,
+     &   hmisc_num_ped_changes,!# of peds with 2 sigma changes from param file
+     &   hmisc_changed_tube,   !list of changed tubes
+     &   hmisc_ped_change      !change in pedestal
+
+*
+*     CTPTYPE=event
+*
+      real*4 hhodo_new_threshold_pos(hnum_scin_planes,hnum_scin_elements)
+      real*4 hhodo_new_threshold_neg(hnum_scin_planes,hnum_scin_elements)
+      real*4 hcal_new_adc_threshold_pos(hmax_cal_blocks)
+      real*4 hcal_new_adc_threshold_neg(hmax_cal_blocks)
+      real*4 hcer_new_adc_threshold(hmax_cer_hits)
+      real*4 hmisc_new_adc_threshold(hmax_misc_hits)
+      real*4 haero_new_threshold_pos(hmax_aero_hits)
+      real*4 haero_new_threshold_neg(hmax_aero_hits)
+*
+      common/hms_adc_thresholds/
+     &   hhodo_new_threshold_pos,
+     &   hhodo_new_threshold_neg,
+     &   hcal_new_adc_threshold_pos,
+     &   hcal_new_adc_threshold_neg,
+     &   hcer_new_adc_threshold,
+     &   hmisc_new_adc_threshold,
+     &   haero_new_threshold_pos,
+     &   haero_new_threshold_neg
+

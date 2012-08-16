@@ -1,0 +1,31 @@
+**************************begin: gen_run_info.dte ***********************
+*- 
+*-   Created   24-May-1994   Kevin B. Beard, Hampton Univ.
+* $Log: gen_run_info.dte,v $
+* Revision 1.3  1995/07/28 15:15:48  cdaq
+* (SAW) Change .TRUE. to 1 for f2c compatibility
+*
+* Revision 1.2  1995/01/31  15:52:22  cdaq
+* (SAW) Add gen_run_hist_dump_interval for in run hist dumping
+*
+* Revision 1.1  1994/06/04  04:49:24  cdaq
+* Initial revision
+*
+*-
+*........................................................................
+*- Misc. info. about a run
+*
+      data gen_run_number,gen_run_type/2*0/
+      data gen_run_total_events/0/
+      data gen_run_UTC_start,gen_run_UTC_stop,gen_run_UTC_last/3*0/
+      data gen_run_date_start,gen_run_date_stop/2*' '/
+      data gen_run_date_last/' '/
+      data gen_run_comment/' '/
+*
+      data gen_run_enable/1,gen_MAX_trigger_types*1/
+      data gen_run_triggered/0,gen_MAX_trigger_types*0/
+*
+      data gen_run_starting_event,gen_run_stopping_event/2*0/
+      data gen_run_hist_dump_interval/0/ ! No in-run dumping by default
+*
+****************************end: gen_run_info.dte ***********************

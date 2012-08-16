@@ -1,0 +1,174 @@
+*
+*     CTPTYPE=parm
+*
+c     resolution parameters for picking best bigcal track using hms info!
+      real*4 GEP_sigma_xdiff
+      real*4 GEP_sigma_ydiff
+      real*4 GEP_sigma_thdiff ! difference in polar scat. angle for e- (radian)
+      real*4 GEP_sigma_phdiff ! difference in azimuthal scar. angle for e- (radian)
+      real*4 GEP_sigma_Ediff 
+      real*4 GEP_sigma_tdiff
+      common/GEP_res/
+     $     GEP_sigma_xdiff,
+     $     GEP_sigma_ydiff,
+     $     GEP_sigma_thdiff,
+     $     GEP_sigma_phdiff,
+     $     GEP_sigma_Ediff,
+     $     GEP_sigma_tdiff
+c     event selection cuts for BigCal calibration:
+      real*4 gep_bcalib_cut_ctime
+      real*4 gep_bcalib_cut_dx
+      real*4 gep_bcalib_cut_dy
+      real*4 gep_bcalib_cut_theta
+      real*4 gep_bcalib_cut_phi
+      real*4 gep_bcalib_cut_elastic ! cut on (hpel(hstheta)-hsp)/hpel(hstheta))
+      real*4 gep_bcalib_cut_ehms(2) ! 1 = min, 2 = max
+      common/gep_bcalib/
+     $     gep_bcalib_cut_ctime,
+     $     gep_bcalib_cut_dx,
+     $     gep_bcalib_cut_dy,
+     $     gep_bcalib_cut_theta,
+     $     gep_bcalib_cut_phi,
+     $     gep_bcalib_cut_elastic,
+     $     gep_bcalib_cut_ehms
+c     coincidence timing window parameters (weed out background hits)
+      real*4 gep_h1time_center
+      real*4 gep_h2time_center
+      real*4 gep_h1time_slop
+      real*4 gep_h2time_slop
+      real*4 gep_btime_center
+      real*4 gep_btime_elastic
+      real*4 gep_btime_slop
+      real*4 gep_htrig_delay ! typically 16 ns
+
+      common/gep_coin_time_window/
+     $     gep_h1time_center,
+     $     gep_h2time_center,
+     $     gep_h1time_slop,
+     $     gep_h2time_slop,
+     $     gep_btime_center,
+     $     gep_btime_elastic,
+     $     gep_btime_slop,
+     $     gep_htrig_delay
+
+      real*4 btrig_phc_p0
+      real*4 btrig_phc_p1
+      real*4 btrig_phc_p2
+      real*4 btrig_phc_p3
+      real*4 btrig_phc_minph
+      real*4 btrig_phc_maxph
+
+      common/btrig_walk_corr/
+     $     btrig_phc_p0,
+     $     btrig_phc_p1,
+     $     btrig_phc_p2,
+     $     btrig_phc_p3,
+     $     btrig_phc_minph,
+     $     btrig_phc_maxph
+
+*
+*     CTPTYPE=event
+*
+      integer*4 ntrigH1,ntrigH2,ntrigB
+      real*4 GEP_ctime_hms ! HMS coincidence time
+      real*4 GEP_ctime_cal ! BigCal coincidence time
+      real*4 GEP_H1time(8) ! HMS trigger1 hits (up to 8/event)
+      real*4 GEP_H2time(8) ! HMS trigger2 hits (up to 8/event)
+      real*4 GEP_Btime(8) ! HMS BigCal trigger hits (up to 8/event)
+      real*4 gep_btime_raw ! BigCal trigger chosen time
+      real*4 gep_btime_corr
+      real*4 GEP_Q2 ! 4 momentum transfer squared: BigCal angle, HMS momentum
+      real*4 GEP_Q2_H ! Q2 from HMS only
+      real*4 GEP_Q2_B ! Q2 from BigCal & HMS vertex, but no HMS momentum
+      real*4 GEP_E_electron ! scattered electron energy in GeV
+      real*4 GEP_P_proton ! scattered proton momentum in GeV
+      real*4 GEP_Pel_htheta ! proton momentum from spect. theta. assume elastic
+      real*4 GEP_Pel_btheta ! proton momentum from BigCal angle assume elastic (and correct angle for HMS vertex)
+      real*4 GEP_delta_p ! proton p - p0 in %, where p0 is HMS central mom.
+      real*4 GEP_xfp_p ! proton x at focal plane
+      real*4 GEP_yfp_p ! proton y at focal plane
+      real*4 GEP_xpfp_p ! proton dx/dz at focal plane
+      real*4 GEP_ypfp_p ! proton dy/dz at focal plane
+      real*4 GEP_xptar_p ! proton dx/dz at target
+      real*4 GEP_yptar_p ! proton dy/dz at target
+      real*4 GEP_ytar_p ! proton ytar
+      real*4 GEP_epsilon ! virtual photon long. polarization, usual definition
+      real*4 GEP_etheta_deg ! electron scattering angle in degrees
+      real*4 GEP_ptheta_deg ! proton scattering angle in degrees
+      real*4 GEP_ephi_deg ! electron azimuthal scattering angle in degrees
+      real*4 GEP_pphi_deg ! proton azimuthal scattering angle in degrees
+      real*4 GEP_Emiss ! missing energy in GeV
+      real*4 GEP_Pmissx ! x cpt. of missing momentum
+      real*4 GEP_Pmissy ! y cpt. of missing momentum
+      real*4 GEP_Pmissz ! z cpt. of missing momentum
+      real*4 GEP_Pmiss ! magnitude of missing momentum in GeV
+      real*4 GEP_W2 ! invariant mass of detected particles: should equal Mp^2
+      real*4 GEP_Mmiss ! missing mass = sqrt(W^2 - Mp^2)
+c     For GEp, all our "missing" quantities should be zero, because W^2 = M^2,
+c     and the e- and p carry all of the energy and momentum in the reaction.
+c     by defining both polar and azimuthal scattering angles theta and phi, we
+c     can define the unit vector in the q-direction, which defines the coord. 
+c     system for the polarization measurement. 
+c trigger times (up to 10 per trigger type) from F1
+c TDCs in electronics bunker in Hall
+      real*4 gep_trigtimes(8,10)
+      integer gep_ntrigs(8)
+
+      common/GEPBLOCK/
+     $     ntrigH1,
+     $     ntrigH2,
+     $     ntrigB,
+     $     GEP_ctime_hms,
+     $     GEP_ctime_cal,
+     $     GEP_H1time,
+     $     GEP_H2time,
+     $     GEP_Btime,
+     $     gep_btime_raw,
+     $     GEP_btime_corr,
+     $     GEP_Q2,
+     $     GEP_Q2_H,
+     $     GEP_Q2_B,
+     $     GEP_E_electron,
+     $     GEP_P_proton,
+     $     GEP_Pel_htheta,
+     $     GEP_Pel_btheta,
+     $     GEP_delta_p,
+     $     GEP_xptar_p,
+     $     GEP_yptar_p,
+     $     GEP_ytar_p,
+     $     GEP_epsilon,
+     $     GEP_etheta_deg,
+     $     GEP_ptheta_deg,
+     $     GEP_ephi_deg,
+     $     GEP_pphi_deg,
+     $     GEP_Emiss,
+     $     GEP_Pmissx,
+     $     GEP_Pmissy,
+     $     GEP_Pmissz,
+     $     GEP_Pmiss,
+     $     GEP_W2,
+     $     GEP_Mmiss,
+     $     GEP_xfp_p,
+     $     GEP_yfp_p,
+     $     GEP_xpfp_p,
+     $     GEP_ypfp_p,
+     >     gep_trigtimes,
+     >     gep_ntrigs
+
+c     expected hit positions in the calorimeter from the HMS:
+      
+      real*4 GEP_etheta_expect_H ! in radians
+      real*4 GEP_ephi_expect_H ! in radians
+      real*4 GEP_bx_expect_H 
+      real*4 GEP_by_expect_H
+
+      real*4 xdiff_shift,ydiff_shift,EprimeMeV
+      real*4 xcal_hexpect_B0,ycal_hexpect_B0	
+	
+      common/gep_bcoord_expect/
+     $     GEP_etheta_expect_H,
+     $     GEP_ephi_expect_H,
+     $     GEP_bx_expect_H,
+     $     GEP_by_expect_H,
+     $     xdiff_shift,ydiff_shift,EprimeMeV,
+     $     xcal_hexpect_B0,ycal_hexpect_B0
