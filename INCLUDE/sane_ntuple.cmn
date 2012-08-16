@@ -144,8 +144,8 @@ c      character*256 b_tree_filename
       real*4 sem_x,sem_y
       integer*4 i_helicity
       real*4 hms_cer_npe1,hms_cer_npe2, hms_cer_adc1,hms_cer_adc2
-      
-      
+
+
       COMMON/HMSINFO/hms_p,hms_e,hms_theta,hms_phi,
      ,     hsxfp_s,hsyfp_s,hsxpfp_s,hsypfp_s,
      ,     hms_xtar,hms_ytar,hms_yptar,hms_xptar,
@@ -158,7 +158,13 @@ c      character*256 b_tree_filename
      ,     slow_rast_x, slow_rast_y,
      ,     sem_x,sem_y,i_helicity 
 
-      
+
+      real*4 srast_x_adc , srast_y_adc
+      real*4 frast_x_adc , frast_y_adc
+
+      COMMON/RASTDETAIL/
+     ,     srast_x_adc, srast_y_adc,
+     ,     frast_x_adc, frast_y_adc
 
       integer*4 maxcl
       parameter (maxcl=15)

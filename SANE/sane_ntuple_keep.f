@@ -502,6 +502,11 @@ c         endif
 
       endif
 
+      srast_x_adc = gsrx_raw_adc
+      srast_y_adc = gsry_raw_adc
+      frast_x_adc = gfrx_raw_adc
+      frast_y_adc = gfry_raw_adc
+
       rast_x       = gfry_raw_adc
       call NANcheckF(rast_x,3)
       rast_y       = gfrx_raw_adc

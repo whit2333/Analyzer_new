@@ -555,6 +555,7 @@ c     $    'cerscaler_old(12):R*8,cerscaler_saved(12):R*8,'//
 
         call HBNAME(id,'hmsblk',TH_HMS,'TH_HMS,PH_HMS,E_HMS,'//
      $              'X_HMS,Y_HMS,dPel_HMS')
+
         call HBNAME(id,'HMSINFO',hms_p,
      $        'hms_p:R*4,hms_e:R*4,hms_theta:R*4,hms_phi:R*4,'//
      $        'hsxfp_s:R*4,hsyfp_s:R*4,hsxpfp_s:R*4,hsypfp_s:R*4,'//
@@ -563,12 +564,16 @@ c     $    'cerscaler_old(12):R*8,cerscaler_saved(12):R*8,'//
      $        'hsshtrk_s:R*4, hsshsum_s:R*4, hsbeta_s:R*4,'//
      $        'hms_cer_npe1:R*4,hms_cer_npe2:R*4,'//
      $        ' hms_cer_adc1:R*4,hms_cer_adc2:R*4')
+
         call HBNAME(id,'RASTINFO',rast_x,
      $        'rast_x:R*4,rast_y:R*4,'//
      $        'slow_rast_x:R*4,slow_rast_y:R*4,'//
      $        'sem_x:R*4,sem_y:R*4,'//
      $        'i_helicity:I*4')
 
+        call HBNAME(id,'RASTDETAIL',srast_x_adc,
+     $        'srast_x_adc:R*4,srast_y_adc:R*4,'//
+     $        'frast_x_adc:R*4,frast_y_adc:R*4')
 c      call HBNAME(id,'HMSINFO',hms_p,
 c     $     'hms_p:R*4,hms_e:R*4,hms_theta:R*4,hms_phi:R*4,'//
 c     $     'hsxfp_s:R*4,hsyfp_s:R*4,hsxpfp_s:R*4,hsypfp_s:R*4,'//
