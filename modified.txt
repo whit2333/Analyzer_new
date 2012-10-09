@@ -1,3 +1,4 @@
+Added to git branch "insane"
 Changes were made to the following files:
 
 etc/Makefile.variables :
