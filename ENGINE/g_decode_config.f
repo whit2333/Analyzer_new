@@ -89,6 +89,7 @@
       integer*4 did, plane, counter, signal, nsubadd, bsubadd, modtyp
       integer*4 lastroc, lastslot
       integer N_lines_read
+      integer num_commas,ii
 
       logical echo,debug,override
       character*26 lo,HI
@@ -144,7 +145,7 @@
 
             if(echo) call g_log_message(line)
 
-            llen = len(line)		! Remove comments (; or !)
+            llen = len(line) ! Remove comments (; or !)
             lpcom = index(line(1:llen),';')
             if(lpcom.gt.0) llen = lpcom - 1
             if(llen.gt.0) then
@@ -163,7 +164,7 @@
 
             if(llen.gt.0) then
                text = .false.
-               do lp=1,llen		! Shift to upper case
+               do lp=1,llen ! Shift to upper case
                   m = index(lo,line(lp:lp))
                   if(m.gt.0) then
                      line(lp:lp) = HI(m:m)
@@ -203,8 +204,22 @@
                      endif
                   endif
                else
-                  read(line(1:llen),'(4i15)') subadd, plane, counter,
+c determine number of commas in the line
+                  num_commas = 0
+                  do ii=1,llen
+                   if (  index(line(ii:ii),',') .gt. 0) then 
+                     num_commas = num_commas + 1
+                    endif
+                  enddo
+                  if ( num_commas .eq. 2) then
+                    read(line(1:llen),*) subadd, plane, counter
+                    signal = 0
+                  elseif ( num_commas  .eq. 3) then
+                    read(line(1:llen),*) subadd, plane, counter,
      $                 signal
+                  else
+                     write(*,*) ' can not read line', line(1:llen)
+                  endif
                   If(OK .and. (roc.ne.lastroc.or.slot.ne.lastslot)) Then
                      if(g_decode_slotpointer(roc,slot).le.0) then
                         g_decode_slotpointer(roc,slot) =
